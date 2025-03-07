@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Appointments</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    /* Sidebar Styling */
+    .sidebar {
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      background-color: #343a40;
+      padding-top: 20px;
+      color: #fff;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    }
+    .sidebar a {
+      color: #fff;
+      padding: 10px 20px;
+      text-decoration: none;
+      display: block;
+    }
+    .sidebar a:hover {
+      background-color: #575d63;
+    }
+    .sidebar .active {
+      background-color: #d62718;
+    }
+
+    /* Content Styling */
+    .content {
+      margin-left: 250px;
+      padding: 20px;
+    }
+
+    .appointments-card {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-custom {
+      background-color: #d62718;
+      color: #fff;
+    }
+
+    .btn-custom:hover {
+      background-color: #b72b13;
+    }
+
+    .appointment-item {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+
+    .modal-header, .modal-footer {
+      background-color: #d62718;
+      color: #fff;
+    }
+
+    .modal-title {
+      font-weight: bold;
+    }
+
+    .modal-body {
+      background-color: #f8f9fa;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 767px) {
+      .sidebar {
+        width: 100%;
+        position: relative;
+      }
+      .content {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+ <!-- Sidebar -->
+ <div class="sidebar">
+    <h3 class="text-white text-center">Patient Dashboard</h3>
+    <a href="Dashboard.html" class="active">Dashboard</a>
+    <a href="profile.html">Profile</a>
+    <a href="appointments.html">Appointments</a>
+    <a href="settings.html">Settings</a>
+    <a href="#">Log Out</a>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="container">
+      <h1 class="mb-4">My Appointments</h1>
+
+      <!-- Appointments Section -->
+      <div class="appointments-card">
+        <h4>Upcoming Appointments</h4>
+
+        <!-- Appointment 1 -->
+        <div class="appointment-item">
+          <p><strong>Doctor:</strong> Dr. Smith</p>
+          <p><strong>Appointment Date:</strong> March 10, 2025</p>
+          <p><strong>Time:</strong> 10:00 AM</p>
+          <p><strong>Status:</strong> Pending</p>
+          <p><strong>Wait Time:</strong> <span id="wait-time-1"></span></p>
+          <button class="btn btn-danger ml-2">Cancel Appointment</button>
+        </div>
+
+        <!-- Appointment 2 -->
+        <div class="appointment-item">
+          <p><strong>Doctor:</strong> Dr. Lee</p>
+          <p><strong>Appointment Date:</strong> March 15, 2025</p>
+          <p><strong>Time:</strong> 2:00 PM</p>
+          <p><strong>Status:</strong> Confirmed</p>
+          <p><strong>Wait Time:</strong> <span id="wait-time-2"></span></p>
+          <button class="btn btn-danger ml-2">Cancel Appointment</button>
+        </div>
+      </div>
+
+      <!-- Modal to Reschedule Appointment -->
+      <div class="modal fade" id="rescheduleModal" tabindex="-1" role="dialog" aria-labelledby="rescheduleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="rescheduleModalLabel">Reschedule Appointment</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group">
+                  <label for="rescheduleDate">New Appointment Date</label>
+                  <input type="date" class="form-control" id="rescheduleDate" required>
+                </div>
+                <div class="form-group">
+                  <label for="rescheduleTime">New Appointment Time</label>
+                  <input type="time" class="form-control" id="rescheduleTime" required>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-custom">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script>
+    // Function to calculate the wait time for an appointment
+    function calculateWaitTime(appointmentDate, appointmentTime, appointmentId) {
+      const appointmentDatetime = new Date(`${appointmentDate} ${appointmentTime}`);
+      const currentDatetime = new Date();
+
+      // Calculate the difference in milliseconds
+      const diff = appointmentDatetime - currentDatetime;
+
+      if (diff <= 0) {
+        document.getElementById(`wait-time-${appointmentId}`).innerHTML = 'Your appointment has passed';
+        return;
+      }
+
+      // Convert milliseconds to hours and minutes
+      const hours = Math.floor(diff / 3600000);
+      const minutes = Math.floor((diff % 3600000) / 60000);
+
+      let waitTimeText = '';
+      if (hours > 0) {
+        waitTimeText = `${hours} hours ${minutes} minutes remaining`;
+      } else {
+        waitTimeText = `${minutes} minutes remaining`;
+      }
+
+      document.getElementById(`wait-time-${appointmentId}`).innerHTML = waitTimeText;
+    }
+
+    // Calculate wait times for all appointments
+    window.onload = function() {
+      calculateWaitTime('2025-03-10', '10:00', 1);
+      calculateWaitTime('2025-03-15', '14:00', 2);
+    };
+  </script>
+</body>
+</html>

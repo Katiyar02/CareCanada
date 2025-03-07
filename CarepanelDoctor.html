@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Doctor Management</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #5a8dee;
+            --secondary-color: #475F7B;
+            --success-color: #39DA8A;
+            --danger-color: #FF5B5C;
+            --warning-color: #FDAC41;
+            --info-color: #00CFDD;
+        }
+        
+        body {
+            background-color: #f8f8f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .sidebar {
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            height: 100vh;
+            position: fixed;
+            width: 250px;
+            z-index: 1000;
+        }
+        
+        .sidebar .logo {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .sidebar .nav-link {
+            color: var(--secondary-color);
+            padding: 12px 20px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background-color: rgba(90, 141, 238, 0.1);
+            color: var(--primary-color);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px 30px;
+        }
+        
+        .page-title {
+            margin-bottom: 30px;
+            color: var(--secondary-color);
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            border: none;
+        }
+        
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid #f0f0f0;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #4a7bda;
+            border-color: #4a7bda;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .table {
+            vertical-align: middle;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .top-bar {
+            background-color: #fff;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            padding: 15px 30px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            padding-left: 40px;
+            border-radius: 50px;
+            border: 1px solid #eee;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 10px;
+            color: #ccc;
+        }
+        
+        .user-dropdown img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 5px;
+        }
+        
+        /* Modal customization */
+        .modal-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .modal-content {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <h4 class="mb-0 text-primary"><i class="fas fa-hospital me-2"></i> MediAdmin</h4>
+        </div>
+        <div class="mt-4">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard.html">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="doctors.html">
+                        <i class="fas fa-user-md"></i> Doctors
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="patients.html">
+                        <i class="fas fa-user-injured"></i> Patients
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="appointments.html">
+                        <i class="fas fa-calendar-check"></i> Appointments
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="departments.html">
+                        <i class="fas fa-hospital-alt"></i> Departments
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="payments.html">
+                        <i class="fas fa-credit-card"></i> Payments
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="reports.html">
+                        <i class="fas fa-chart-bar"></i> Reports
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="settings.html">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                </li>
+                <li class="nav-item mt-4">
+                    <a class="nav-link text-danger" href="#">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar d-flex justify-content-between align-items-center">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" class="form-control" placeholder="Search...">
+            </div>
+            <div class="user-dropdown dropdown">
+                <a href="#" class="dropdown-toggle text-decoration-none text-dark" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="/api/placeholder/100/100" alt="Admin"> 
+                    <span>Admin User</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 class="page-title">Doctor Management</h2>
+
+        <!-- Doctor List Card -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Doctor List</h5>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDoctorModal">
+                    <i class="fas fa-plus me-1"></i> Add New Doctor
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Photo</th>
+                                <th>Name</th>
+                                <th>Specialty</th>
+                                <th>Department</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><img src="/api/placeholder/100/100" alt="Dr. John Smith" class="avatar"></td>
+                                <td>Dr. John Smith</td>
+                                <td>Cardiologist</td>
+                                <td>Cardiology</td>
+                                <td>+1 234 567 890</td>
+                                <td>john.smith@example.com</td>
+                                <td><span class="status-badge bg-success text-white">Active</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editDoctorModal"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                    <button class="btn btn-sm btn-info text-white"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><img src="/api/placeholder/100/100" alt="Dr. Sarah Johnson" class="avatar"></td>
+                                <td>Dr. Sarah Johnson</td>
+                                <td>Neurologist</td>
+                                <td>Neurology</td>
+                                <td>+1 987 654 321</td>
+                                <td>sarah.johnson@example.com</td>
+                                <td><span class="status-badge bg-success text-white">Active</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editDoctorModal"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                    <button class="btn btn-sm btn-info text-white"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><img src="/api/placeholder/100/100" alt="Dr. Robert Chen" class="avatar"></td>
+                                <td>Dr. Robert Chen</td>
+                                <td>Pediatrician</td>
+                                <td>Pediatrics</td>
+                                <td>+1 567 890 123</td>
+                                <td>robert.chen@example.com</td>
+                                <td><span class="status-badge bg-warning text-white">On Leave</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editDoctorModal"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                    <button class="btn btn-sm btn-info text-white"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><img src="/api/placeholder/100/100" alt="Dr. Emily Davis" class="avatar"></td>
+                                <td>Dr. Emily Davis</td>
+                                <td>Dermatologist</td>
+                                <td>Dermatology</td>
+                                <td>+1 321 654 987</td>
+                                <td>emily.davis@example.com</td>
+                                <td><span class="status-badge bg-success text-white">Active</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editDoctorModal"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                    <button class="btn btn-sm btn-info text-white"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><img src="/api/placeholder/100/100" alt="Dr. Michael Brown" class="avatar"></td>
+                                <td>Dr. Michael Brown</td>
+                                <td>Orthopedic Surgeon</td>
+                                <td>Orthopedics</td>
+                                <td>+1 890 123 456</td>
+                                <td>michael.brown@example.com</td>
+                                <td><span class="status-badge bg-danger text-white">Inactive</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editDoctorModal"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                    <button class="btn btn-sm btn-info text-white"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-end mt-3">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Doctor Modal -->
+    <div class="modal fade" id="addDoctorModal" tabindex="-1" aria-labelledby="addDoctorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="addDoctorModalLabel">Add New Doctor</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="firstName" class="form-label">First Name*</label>
+                                <input type="text" class="form-control" id="firstName" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="lastName" class="form-label">Last Name*</label>
+                                <input type="text" class="form-control" id="lastName" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email*</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label">Phone Number*</label>
+                                <input type="tel" class="form-control" id="phone" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="specialty" class="form-label">Specialty*</label>
+                                <select class="form-select" id="specialty" required>
+                                    <option value="" selected disabled>Select Specialty</option>
+                                    <option value="Cardiologist">Cardiologist</option>
+                                    <option value="Dermatologist">Dermatologist</option>
+                                    <option value="Neurologist">Neurologist</option>
+                                    <option value="Orthopedic Surgeon">Orthopedic Surgeon</option>
+                                    <option value="Pediatrician">Pediatrician</option>
+                                    <option value="Psychiatrist">Psychiatrist</option>
+                                    <option value="Radiologist">Radiologist</option>
+                                    <option value="General Surgeon">General Surgeon</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="department" class="form-label">Department*</label>
+                                <select class="form-select" id="department" required>
+                                    <option value="" selected disabled>Select Department</option>
+                                    <option value="Cardiology">Cardiology</option>
+                                    <option value="Dermatology">Dermatology</option>
+                                    <option value="Neurology">Neurology</option>
+                                    <option value="Orthopedics">Orthopedics</option>
+                                    <option value="Pediatrics">Pediatrics</option>
+                                    <option value="Psychiatry">Psychiatry</option>
+                                    <option value="Radiology">Radiology</option>
+                                    <option value="Surgery">Surgery</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="gender" class="form-label">Gender</label>
+                                <select class="form-select" id="gender">
+                                    <option value="" selected disabled>Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="dob" class="form-label">Date of Birth</label>
+                                <input type="date" class="form-control" id="dob">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="experience" class="form-label">Experience (Years)</label>
+                                <input type="number" class="form-control" id="experience">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="status" class="form-label">Status*</label>
+                                <select class="form-select" id="status" required>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                    <option value="On Leave">On Leave</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea class="form-control" id="address" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="biography" class="form-label">Biography</label>
+                            <textarea class="form-control" id="biography" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="profileImage" class="form-label">Profile Image</label>
+                            <input class="form-control" type="file" id="profileImage">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Save Doctor</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Doctor Modal -->
+    <div class="modal fade" id="editDoctorModal" tabindex="-1" aria-labelledby="editDoctorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="editDoctorModalLabel">Edit Doctor Information</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Pre-filled form with same fields as Add Doctor -->
+                    <form>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="editFirstName" class="form-label">First Name*</label>
+                                <input type="text" class="form-control" id="editFirstName" value="John" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editLastName" class="form-label">Last Name*</label>
+                                <input type="text" class="form-control" id="editLastName" value="Smith" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="editEmail" class="form-label">Email*</label>
+                                <input type="email" class="form-control" id="editEmail" value="john.smith@example.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editPhone" class="form-label">Phone Number*</label>
+                                <input type="tel" class="form-control" id="editPhone" value="+1 234 567 890" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="editSpecialty" class="form-label">Specialty*</label>
+                                <select class="form-select" id="editSpecialty" required>
+                                    <option value="Cardiologist" selected>Cardiologist</option>
+                                    <option value="Dermatologist">Dermatologist</option>
+                                    <option value="Neurologist">Neurologist</option>
+                                    <option value="Orthopedic Surgeon">Orthopedic Surgeon</option>
+                                    <option value="Pediatrician">Pediatrician</option>
+                                    <option value="Psychiatrist">Psychiatrist</option>
+                                    <option value="Radiologist">Radiologist</option>
+                                    <option value="General Surgeon">General Surgeon</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editDepartment" class="form-label">Department*</label>
+                                <select class="form-select" id="editDepartment" required>
+                                    <option value="Cardiology" selected>Cardiology</option>
+                                    <option value="Dermatology">Dermatology</option>
+                                    <option value="Neurology">Neurology</option>
+                                    <option value="Orthopedics">Orthopedics</option>
+                                    <option value="Pediatrics">Pediatrics</option>
+                                    <option value="Psychiatry">Psychiatry</option>
+                                    <option value="Radiology">Radiology</option>
+                                    <option value="Surgery">Surgery</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="editGender" class="form-label">Gender</label>
+                                <select class="form-select" id="editGender">
+                                    <option value="Male" selected>Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editDob" class="form-label">Date of Birth</label>
+                                <input type="date" class="form-control" id="editDob" value="1975-06-15">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="editExperience" class="form-label">Experience (Years)</label>
+                                <input type="number" class="form-control" id="editExperience" value="15">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editStatus" class="form-label">Status*</label>
+                                <select class="form-select" id="editStatus" required>
+                                    <option value="Active" selected>Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                    <option value="On Leave">On Leave</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editAddress" class="form-label">Address</label>
+                            <textarea class="form-control" id="editAddress" rows="3">123 Medical Center Drive, New York, NY 10001</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editBiography" class="form-label">Biography</label>
+                            <textarea class="form-control" id="editBiography" rows="3">Dr. John Smith is a board-certified cardiologist with over 15 years of experience in treating cardiovascular diseases. He specializes in interventional cardiology and cardiac rehabilitation.</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProfileImage" class="form-label">Profile Image</label>
+                            <input class="form-control" type="file" id="editProfileImage">
+                            <div class="mt-2">
+                                <img src="/api/placeholder/100/100" alt="Current profile" class="avatar" style="width: 60px; height: 60px;">
+                                <small class="ms-2 text-muted">Current profile image</small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Update Doctor</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap and other scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

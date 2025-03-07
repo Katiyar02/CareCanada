@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Settings</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+        font-family: Arial, sans-serif;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 250px;
+        background-color: #343a40;
+        padding-top: 20px;
+        color: #fff;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar a {
+        color: #fff;
+        padding: 10px 20px;
+        text-decoration: none;
+        display: block;
+        }
+        .sidebar a:hover {
+        background-color: #575d63;
+        }
+        .sidebar .active {
+        background-color: #d62718;
+        }
+
+        /* Content Styling */
+        .content {
+        margin-left: 250px;
+        padding: 20px;
+        }
+
+        .settings-card {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-custom {
+        background-color: #d62718;
+        color: #fff;
+        }
+
+        .btn-custom:hover {
+        background-color: #b72b13;
+        }
+
+        .modal-header, .modal-footer {
+        background-color: #d62718;
+        color: #fff;
+        }
+
+        .modal-title {
+        font-weight: bold;
+        }
+
+        .modal-body {
+        background-color: #f8f9fa;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 767px) {
+        .sidebar {
+            width: 100%;
+            position: relative;
+        }
+        .content {
+            margin-left: 0;
+        }
+        }
+    </style>
+</head>
+<body>
+
+   <!-- Sidebar -->
+   <div class="sidebar">
+    <h3 class="text-white text-center">Patient Dashboard</h3>
+    <a href="Dashboard.html" class="active">Dashboard</a>
+    <a href="profile.html">Profile</a>
+    <a href="appointments.html">Appointments</a>
+    <a href="settings.html">Settings</a>
+    <a href="#">Log Out</a>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="container">
+      <h1 class="mb-4">Account Settings</h1>
+
+      <!-- Settings Card -->
+      <div class="settings-card">
+        <h4>Personal Information</h4>
+        <form>
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" class="form-control" id="name" value="John Doe">
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" class="form-control" id="email" value="john.doe@example.com">
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="text" class="form-control" id="phone" value="+1 (555) 123-4567">
+          </div>
+          <button type="submit" class="btn btn-custom">Update Information</button>
+        </form>
+      </div>
+
+      <br>
+
+      <!-- Password Change Card -->
+      <div class="settings-card">
+        <h4>Change Password</h4>
+        <form>
+          <div class="form-group">
+            <label for="current-password">Current Password</label>
+            <input type="password" class="form-control" id="current-password" placeholder="Enter current password">
+          </div>
+          <div class="form-group">
+            <label for="new-password">New Password</label>
+            <input type="password" class="form-control" id="new-password" placeholder="Enter new password">
+          </div>
+          <div class="form-group">
+            <label for="confirm-password">Confirm New Password</label>
+            <input type="password" class="form-control" id="confirm-password" placeholder="Confirm new password">
+          </div>
+          <button type="submit" class="btn btn-custom">Change Password</button>
+        </form>
+      </div>
+
+      <br>
+
+      <!-- Notification Settings Card -->
+      <div class="settings-card">
+        <h4>Notification Preferences</h4>
+        <form>
+          <div class="form-group">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id="appointment-notifications" checked>
+              <label class="form-check-label" for="appointment-notifications">Appointment Reminders</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id="promotions-notifications" checked>
+              <label class="form-check-label" for="promotions-notifications">Promotions & Offers</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id="news-notifications">
+              <label class="form-check-label" for="news-notifications">Healthcare News</label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-custom">Save Preferences</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
