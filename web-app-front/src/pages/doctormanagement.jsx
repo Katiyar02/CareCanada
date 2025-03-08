@@ -26,7 +26,7 @@ const DoctorManagement = () => {
   useEffect(() => {
     const fetchHospitals = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/hospitals");
+        const response = await axios.get("http://localhost:5000/api/hospitals/important");
         setHospitals(response.data.hospitals);
       } catch (error) {
         console.error("❌ Error fetching hospitals:", error);
@@ -171,15 +171,19 @@ const DoctorManagement = () => {
                   />
                 </Form.Group>
                 <Form.Group className="mb-2">
-                  <Form.Label>Speciality</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="speciality"
-                    placeholder="E.g. Cardiologist, Neurologist"
-                    onChange={handleChange}
-                    required
-                  />
-                </Form.Group>
+  <Form.Label>Speciality</Form.Label>
+  <Form.Select name="speciality" onChange={handleChange} required>
+    <option value="">Select Speciality</option>
+    <option value="Cardiologist">Cardiologist</option>
+    <option value="Neurologist">Neurologist</option>
+    <option value="Orthopedic">Orthopedic</option>
+    <option value="Dermatologist">Dermatologist</option>
+    <option value="General Surgeon">General Surgeon</option>
+    <option value="Pediatrician">Pediatrician</option>
+    <option value="Oncologist">Oncologist</option>
+    <option value="Psychiatrist">Psychiatrist</option>
+  </Form.Select>
+</Form.Group>
                 <Form.Group className="mb-2">
                   <Form.Label>Gender</Form.Label>
                   <Form.Select name="gender" onChange={handleChange} required>

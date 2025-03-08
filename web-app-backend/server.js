@@ -176,6 +176,70 @@ app.get("/api/doctors", async (req, res) => {
     }
 });
 
+// ✅ User Signup API (Admin & Patient)
+app.post("/api/signup", async (req, res) => {
+    try {
+        const { name, dob, gender, phone, email, address, emergency_contact, emergency_name, emergency_relation, postal_code, password, is_admin } = req.body;
+
+        // 🔹 Check if email already exists
+        const [existingUser] = await db.query("SELECT * FROM Users WHERE email = ?", [email]);
+        if (existingUser.length > 0) {
+            return res.status(400).json({ success: false, message: "Email already exists!" });
+        }
+
+        // 🔹 Insert User into Database
+        const sql = `INSERT INTO Users (name, dob, gender, phone, email, address, emergency_contact, emergency_name, emergency_relation, postal_code, password, is_admin, is_deleted) 
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'N')`;
+
+        await db.query(sql, [name, dob, gender, phone, email, address, emergency_contact, emergency_name, emergency_relation, postal_code, password, is_admin]);
+
+        res.json({ success: true, message: "User registered successfully!" });
+    } catch (error) {
+        console.error("❌ Error signing up:", error);
+        res.status(500).json({ success: false, error: "Failed to register user" });
+    }
+});
+
+// ✅ User Login API
+app.post("/api/login", async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // 🔹 Check if User Exists
+        const [user] = await db.query("SELECT * FROM Users WHERE email = ?", [email]);
+        if (user.length === 0) {
+            return res.status(401).json({ success: false, message: "User not found!" });
+        }
+
+        const validUser = user[0];
+
+        // 🔹 Check Password (No Hashing)
+        if (validUser.password !== password) {
+            return res.status(401).json({ success: false, message: "Invalid password!" });
+        }
+
+        res.json({ success: true, message: "Login successful!", user: validUser });
+    } catch (error) {
+        console.error("❌ Error logging in:", error);
+        res.status(500).json({ success: false, error: "Login failed" });
+    }
+});
+
+// ✅ Get User Profile (Admin & Patient)
+app.get("/api/profile/:user_id", async (req, res) => {
+    try {
+        const { user_id } = req.params;
+        const [user] = await db.query("SELECT * FROM Users WHERE user_id = ?", [user_id]);
+
+        if (user.length === 0) {
+            return res.status(404).json({ success: false, message: "User not found!" });
+        }
+
+        res.json({ success: true, user: user[0] });
+    } catch (error) {
+        res.status(500).json({ success: false, error: "Failed to fetch user profile" });
+    }
+});
 
 // ✅ Start the Server
 app.listen(PORT, () => {
