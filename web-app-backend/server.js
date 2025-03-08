@@ -181,9 +181,6 @@ app.get("/api/doctors", async (req, res) => {
     }
 });
 
-
-
-
 // ✅ API to Update Doctor Details
 app.put("/api/doctors/:doctor_id", async (req, res) => {
     try {
@@ -274,6 +271,32 @@ app.get("/api/profile/:user_id", async (req, res) => {
         res.json({ success: true, user: user[0] });
     } catch (error) {
         res.status(500).json({ success: false, error: "Failed to fetch user profile" });
+    }
+});
+
+// ✅ API to Get All Appointments
+app.get("/api/appointments", async (req, res) => {
+    try {
+        const [rows] = await db.query(`
+            SELECT 
+                a.appointment_id,
+                u.name AS patient_name,
+                d.name AS doctor_name,
+                h.name AS hospital_name,
+                a.appointment_date,
+                a.status,
+                a.notes
+            FROM Appointments a
+            JOIN Users u ON a.patient_id = u.user_id
+            JOIN Doctor d ON a.doctor_id = d.doctor_id
+            JOIN Hospital h ON a.hospital_id = h.hospital_id
+            WHERE a.is_deleted = 'N'
+            ORDER BY a.appointment_date DESC
+        `);
+        res.json({ success: true, appointments: rows });
+    } catch (error) {
+        console.error("❌ Error fetching appointments:", error.message);
+        res.status(500).json({ success: false, error: "Failed to fetch appointments" });
     }
 });
 

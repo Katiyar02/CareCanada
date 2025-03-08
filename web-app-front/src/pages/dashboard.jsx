@@ -119,6 +119,22 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const PatientQueueManagement = () => {
+    const [appointments, setAppointments] = useState([]);
+  
+    // ✅ Fetch Appointments from API
+    useEffect(() => {
+      const fetchAppointments = async () => {
+        try {
+          const response = await axios.get("http://localhost:5000/api/appointments");
+          setAppointments(response.data.appointments);
+        } catch (error) {
+          console.error("❌ Error fetching appointments:", error);
+        }
+      };
+      fetchAppointments();
+    }, []);
+
   // Fetch hospitals from the backend
   const fetchHospitals = async () => {
     setLoading(true);
@@ -161,26 +177,12 @@ const Dashboard = () => {
   useEffect(() => {
     fetchHospitals();
   }, []);
-
-  
-  
-  
-  
-
   return (
     <div className="container-fluid">
       <div className="row">
         <div className="col-md-12 main-content">
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2>Dashboard Overview</h2>
-            {/* <div>
-              <button className="btn btn-light me-2">
-                <FontAwesomeIcon icon={faFilter} /> Filter
-              </button>
-              <button className="btn btn-danger" onClick={handleShow}>
-                <FontAwesomeIcon icon={faPlus} /> Add Hospital
-              </button>
-            </div> */}
           </div>
 
           {/* Stats Cards */}
@@ -283,67 +285,74 @@ const Dashboard = () => {
 
           {/* Patient Queue Management */}
           <div className="mt-4">
-            <h4>Patient Queue Management</h4>
-            <div className="card">
-              <div className="card-header d-flex justify-content-between">
-                <div>
-                  <select className="form-select d-inline-block w-auto me-2">
-                    <option>All Hospitals</option>
-                  </select>
-                  <select className="form-select d-inline-block w-auto">
-                    <option>All Departments</option>
-                  </select>
-                </div>
-                <div>
-                  <button className="btn btn-outline-secondary me-2">Export</button>
-                  <button className="btn btn-danger">
-                    <FontAwesomeIcon icon={faPlus} /> Add Patient
-                  </button>
-                </div>
-              </div>
-              <div className="card-body">
-                <table className="table table-hover">
-                  <thead>
-                    <tr>
-                      <th>Token</th>
-                      <th>Patient Name</th>
-                      <th>Hospital</th>
-                      <th>Service</th>
-                      <th>Check-in Time</th>
-                      <th>Est. Wait</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[
-                      { token: "A-123", name: "John Smith", hospital: "Toronto General", service: "Emergency", checkIn: "10:32 AM", wait: "15 min", status: "Waiting" },
-                      { token: "A-124", name: "Sarah Johnson", hospital: "Toronto General", service: "X-Ray", checkIn: "10:45 AM", wait: "25 min", status: "Waiting" },
-                      { token: "A-125", name: "Michael Brown", hospital: "Toronto General", service: "Emergency", checkIn: "10:50 AM", wait: "5 min", status: "In Progress" },
-                    ].map((patient, index) => (
-                      <tr key={index}>
-                        <td>{patient.token}</td>
-                        <td>{patient.name}</td>
-                        <td>{patient.hospital}</td>
-                        <td>{patient.service}</td>
-                        <td>{patient.checkIn}</td>
-                        <td>{patient.wait}</td>
-                        <td><span className={`status-badge status-${patient.status.toLowerCase().replace(" ", "-")}`}>{patient.status}</span></td>
-                        <td>
-                          <button className="btn btn-primary btn-sm me-1"><FontAwesomeIcon icon={faEdit} /></button>
-                          <button className="btn btn-success btn-sm me-1"><FontAwesomeIcon icon={faCheck} /></button>
-                          <button className="btn btn-danger btn-sm"><FontAwesomeIcon icon={faTimes} /></button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+      <h4>Patient Queue Management</h4>
+      <div className="card">
+        <div className="card-header d-flex justify-content-between">
+          <div>
+            <select className="form-select d-inline-block w-auto me-2">
+              <option>All Hospitals</option>
+            </select>
+            <select className="form-select d-inline-block w-auto">
+              <option>All Departments</option>
+            </select>
           </div>
-
+          <div>
+            <button className="btn btn-outline-secondary me-2">Export</button>
+            <button className="btn btn-danger">
+              <FontAwesomeIcon icon={faPlus} /> Add Patient
+            </button>
+          </div>
+        </div>
+        <div className="card-body">
+          <table className="table table-hover">
+            <thead>
+              <tr>
+                <th>Appointment ID</th>
+                <th>Patient Name</th>
+                <th>Doctor</th>
+                <th>Hospital</th>
+                <th>Appointment Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {appointments.length > 0 ? (
+                appointments.map((appointment) => (
+                  <tr key={appointment.appointment_id}>
+                    <td>{appointment.appointment_id}</td>
+                    <td>{appointment.patient_name}</td>
+                    <td>{appointment.doctor_name}</td>
+                    <td>{appointment.hospital_name}</td>
+                    <td>{new Date(appointment.appointment_date).toLocaleString()}</td>
+                    <td>
+                      <span className={`badge bg-${appointment.status === "Confirmed" ? "success" : "warning"}`}>
+                        {appointment.status}
+                      </span>
+                    </td>
+                    <td>
+                      <button className="btn btn-primary btn-sm me-1">
+                        <FontAwesomeIcon icon={faEdit} />
+                      </button>
+                      <button className="btn btn-success btn-sm me-1">
+                        <FontAwesomeIcon icon={faCheck} />
+                      </button>
+                      <button className="btn btn-danger btn-sm">
+                        <FontAwesomeIcon icon={faTimes} />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center">No appointments found.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
+    </div>
 
       {/* ADD HOSPITAL MODAL */}
       {/* Modal for Adding a New Hospital */}
