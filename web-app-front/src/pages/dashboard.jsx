@@ -2,9 +2,64 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHospital, faUserInjured, faUsers, faClock, faFilter, faPlus, faEdit, faTrash, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
-
+import { Modal, Button, Form } from "react-bootstrap";
+import axios from "axios"; // To send API requests
 
 const Dashboard = () => {
+  // State for Modal
+  const [show, setShow] = useState(false);
+  const [newHospital, setNewHospital] = useState({
+    name: "",
+    address: "",
+    city: "",
+    province: "",
+    postal_code: "",
+    phone: "",
+    has_emergency: 0, // Default to No
+    type: "",
+    email: "",
+    website: "",
+  });
+
+  // Open & Close Modal
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  // Handle Input Change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+  
+    setNewHospital((prev) => ({
+      ...prev,
+      [name]: name === "has_emergency" ? (value === "1" ? 1 : 0) : value, // ✅ Ensures Number (1 or 0)
+    }));
+  };
+  
+  
+  
+  
+
+
+
+  // Handle Form Submit - Send Data to Backend
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post("http://localhost:5000/api/hospitals", newHospital);
+    
+      alert("✅ Hospital added successfully!");
+      setShow(false);
+      window.location.reload(); // Refresh the page to show the new hospital
+    } catch (error) {
+      console.error("❌ Error adding hospital:", error);
+      alert("❌ Failed to add hospital.");
+    }
+  };
+  
+  
+  
+  
+  
+
   return (
     <div className="container-fluid">
       <div className="row">
@@ -15,7 +70,7 @@ const Dashboard = () => {
               <button className="btn btn-light me-2">
                 <FontAwesomeIcon icon={faFilter} /> Filter
               </button>
-              <button className="btn btn-danger">
+              <button className="btn btn-danger" onClick={handleShow}>
                 <FontAwesomeIcon icon={faPlus} /> Add Hospital
               </button>
             </div>
@@ -55,44 +110,9 @@ const Dashboard = () => {
                   <button className="btn btn-outline-secondary mx-2">Emergency Services</button>
                   <button className="btn btn-outline-primary">High Volume</button>
                 </div>
-                <button className="btn btn-danger">
+                <button className="btn btn-danger" onClick={handleShow}>
                   <FontAwesomeIcon icon={faPlus} /> Add New Hospital
                 </button>
-              </div>
-              <div className="card-body">
-                <table className="table table-hover">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Location</th>
-                      <th>Status</th>
-                      <th>Wait Time</th>
-                      <th>Patients</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[
-                      { name: "Toronto General Hospital", location: "Toronto, ON", status: "Active", wait: "35 min", patients: 42, color: "green" },
-                      { name: "Montreal General Hospital", location: "Montreal, QC", status: "Active", wait: "65 min", patients: 78, color: "red" },
-                      { name: "Vancouver General Hospital", location: "Vancouver, BC", status: "Active", wait: "15 min", patients: 23, color: "green" },
-                      { name: "Calgary Foothills Hospital", location: "Calgary, AB", status: "Active", wait: "40 min", patients: 37, color: "yellow" },
-                      { name: "Ottawa Civic Hospital", location: "Ottawa, ON", status: "Maintenance", wait: "45 min", patients: 31, color: "yellow" }
-                    ].map((hospital, index) => (
-                      <tr key={index}>
-                        <td>{hospital.name}</td>
-                        <td>{hospital.location}</td>
-                        <td><span className={`status-badge status-${hospital.status.toLowerCase()}`}>{hospital.status}</span></td>
-                        <td><span className={`wait-time wait-${hospital.color}`}>{hospital.wait}</span></td>
-                        <td>{hospital.patients}</td>
-                        <td>
-                          <button className="btn btn-primary btn-sm me-1"><FontAwesomeIcon icon={faEdit} /></button>
-                          <button className="btn btn-danger btn-sm"><FontAwesomeIcon icon={faTrash} /></button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
               </div>
             </div>
           </div>
@@ -157,8 +177,74 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+
         </div>
       </div>
+
+      {/* ADD HOSPITAL MODAL */}
+      {/* Modal for Adding a New Hospital */}
+<Modal show={show} onHide={() => setShow(false)} centered>
+  <Modal.Header closeButton>
+    <Modal.Title>Add New Hospital</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <Form>
+      <Form.Group className="mb-2">
+        <Form.Label>Hospital Name</Form.Label>
+        <Form.Control type="text" name="name" placeholder="e.g. Toronto General Hospital" onChange={handleChange} required />
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>Address</Form.Label>
+        <Form.Control type="text" name="address" placeholder="Enter address" onChange={handleChange} required />
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>City</Form.Label>
+        <Form.Control type="text" name="city" placeholder="e.g. Toronto" onChange={handleChange} required />
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>Province</Form.Label>
+        <Form.Control type="text" name="province" placeholder="e.g. Ontario" onChange={handleChange} required />
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>Postal Code</Form.Label>
+        <Form.Control type="text" name="postal_code" placeholder="e.g. M5G 2C4" onChange={handleChange} required />
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>Phone</Form.Label>
+        <Form.Control type="text" name="phone" placeholder="e.g. +1 416-123-4567" onChange={handleChange} required />
+      </Form.Group>
+      <Form.Group className="mb-2">
+  <Form.Label>Has Emergency?</Form.Label>
+  <Form.Select name="has_emergency" value={newHospital.has_emergency} onChange={handleChange}>
+    <option value="1">Yes</option>  {/* ✅ Sends 1 */}
+    <option value="0">No</option>   {/* ✅ Sends 0 */}
+  </Form.Select>
+</Form.Group>
+
+
+
+
+
+      <Form.Group className="mb-2">
+        <Form.Label>Type</Form.Label>
+        <Form.Control type="text" name="type" placeholder="e.g. General, Specialized" onChange={handleChange} required />
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>Email</Form.Label>
+        <Form.Control type="email" name="email" placeholder="e.g. hospital@example.com" onChange={handleChange} required />
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>Website</Form.Label>
+        <Form.Control type="text" name="website" placeholder="e.g. www.hospital.com" onChange={handleChange} />
+      </Form.Group>
+    </Form>
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={() => setShow(false)}>Cancel</Button>
+    <Button variant="danger" onClick={handleSubmit}>Add Hospital</Button>
+  </Modal.Footer>
+</Modal>
+
     </div>
   );
 };
