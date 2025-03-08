@@ -31,12 +31,13 @@ const Navbar = ({ toggleSidebar }) => {
     {/* Navbar Links */}
     <div className={`collapse navbar-collapse ${isOpen ? "show" : ""}`} id="navbarNav">
       <ul className="navbar-nav ms-auto">
-        <li className="nav-item"><Link className="nav-link" to="/" onClick={toggleNavbar}>Home</Link></li>
-        <li className="nav-item"><Link className="nav-link" to="/appointments" onClick={toggleNavbar}>Appointments</Link></li>
-        <li className="nav-item"><Link className="nav-link" to="/profile" onClick={toggleNavbar}>Profile</Link></li>
-        <li className="nav-item"><Link className="nav-link" to="/settings" onClick={toggleNavbar}>Settings</Link></li>
-        <li className="nav-item"><Link className="nav-link" to="/login" onClick={toggleNavbar}>Login</Link></li>
+        <li className="nav-item"><Link className="nav-link text-white" to="/" onClick={toggleNavbar}>Home</Link></li>
+        <li className="nav-item"><Link className="nav-link text-white" to="/appointments" onClick={toggleNavbar}>Appointments</Link></li>
+        <li className="nav-item"><Link className="nav-link text-white" to="/profile" onClick={toggleNavbar}>Profile</Link></li>
+        <li className="nav-item"><Link className="nav-link text-white" to="/settings" onClick={toggleNavbar}>Settings</Link></li>
+        <li className="nav-item"><Link className="nav-link text-white" to="/login" onClick={toggleNavbar}>Login</Link></li>
         <li className="nav-item"><Link className="btn btn-light text-danger ms-2" to="/signup" onClick={toggleNavbar}>Sign Up</Link></li>
+        <li className="nav-item"><Link className="nav-link text-white" to="/carecanadaprompt">AI Diagnosis</Link></li>
       </ul>
     </div>
   </div>
