@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHospital, faUserInjured, faUsers, faClock, faFilter, faPlus, faEdit, faTrash, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -114,6 +114,54 @@ const Dashboard = () => {
     }
   };
   
+  const [hospitals, setHospitals] = useState([]);
+  const [emergencyhospitals, setemergencyHospitals] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Fetch hospitals from the backend
+  const fetchHospitals = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await axios.get("http://localhost:5000/api/hospitals/important");
+      if (response.data.success) {
+        setHospitals(response.data.hospitals);
+      } else {
+        setError("Failed to fetch hospitals.");
+      }
+    } catch (err) {
+      setError("An error occurred while fetching hospitals.");
+      console.error("Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch hospitals from the backend
+  const fetchEmergencyHospitals = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await axios.get("http://localhost:5000/api/hospitals/emergency");
+      if (response.data.success) {
+        setHospitals(response.data.hospitals);
+      } else {
+        setError("Failed to fetch hospitals.");
+      }
+    } catch (err) {
+      setError("An error occurred while fetching hospitals.");
+      console.error("Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch hospitals when the component mounts
+  useEffect(() => {
+    fetchHospitals();
+  }, []);
+
   
   
   
@@ -125,14 +173,14 @@ const Dashboard = () => {
         <div className="col-md-12 main-content">
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2>Dashboard Overview</h2>
-            <div>
+            {/* <div>
               <button className="btn btn-light me-2">
                 <FontAwesomeIcon icon={faFilter} /> Filter
               </button>
               <button className="btn btn-danger" onClick={handleShow}>
                 <FontAwesomeIcon icon={faPlus} /> Add Hospital
               </button>
-            </div>
+            </div> */}
           </div>
 
           {/* Stats Cards */}
@@ -165,14 +213,71 @@ const Dashboard = () => {
             <div className="card">
               <div className="card-header d-flex justify-content-between">
                 <div>
-                  <button className="btn btn-outline-danger">All Hospitals</button>
-                  <button className="btn btn-outline-secondary mx-2">Emergency Services</button>
-                  <button className="btn btn-outline-primary">High Volume</button>
+                  <button className="btn btn-outline-danger" onClick={fetchHospitals} disabled={loading}>Recently added Hospitals</button>
+                  <button className="btn btn-outline-secondary mx-2"onClick={fetchEmergencyHospitals} >Emergency Services</button>
+                  {/* <button className="btn btn-outline-primary">High Volume</button> */}
                 </div>
                 <button className="btn btn-danger" onClick={handleShow}>
                   <FontAwesomeIcon icon={faPlus} /> Add New Hospital
                 </button>
               </div>
+            { hospitals.length > 0 ? (
+        <table className="table table-striped mt-3">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>City</th>
+              <th>Phone</th>
+              <th>Emergency</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            {hospitals.map((hospital) => (
+              <tr key={hospital.hospital_id}>
+                <td>{hospital.hospital_id}</td>
+                <td>{hospital.name}</td>
+                <td>{hospital.city}</td>
+                <td>{hospital.phone}</td>
+                <td>{hospital.has_emergency === 1 ? "Yes" : "No"}</td>
+                <td>{hospital.type}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p></p>
+      )}
+      {emergencyhospitals.length > 0 ? (
+        <table className="table table-striped mt-3">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>City</th>
+              <th>Phone</th>
+              <th>Emergency</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            {hospitals.map((emergencyhospitals) => (
+              <tr key={emergencyhospitals.hospital_id}>
+                <td>{emergencyhospitals.hospital_id}</td>
+                <td>{emergencyhospitals.name}</td>
+                <td>{emergencyhospitals.city}</td>
+                <td>{emergencyhospitals.phone}</td>
+                <td>{emergencyhospitals.has_emergency === 1 ? "Yes" : "No"}</td>
+                <td>{emergencyhospitals.type}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )
+       : (
+        <p></p>
+      )}
             </div>
           </div>
 
