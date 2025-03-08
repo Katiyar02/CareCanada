@@ -307,6 +307,73 @@ const handleEditChange = (e) => {
     <Button variant="primary" onClick={handleEditSubmit}>Save Changes</Button>
   </Modal.Footer>
 </Modal>
+{/* ADD DOCTOR MODAL */}
+<Modal show={show} onHide={() => setShow(false)} centered>
+  <Modal.Header closeButton>
+    <Modal.Title>Add Doctor</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <Form>
+      <Form.Group className="mb-2">
+        <Form.Label>Doctor Name</Form.Label>
+        <Form.Control type="text" name="name" onChange={handleChange} required />
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>Speciality</Form.Label>
+        <Form.Control type="text" name="speciality" onChange={handleChange} required />
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>Hospital</Form.Label>
+        <Form.Select name="hospital_id" onChange={handleChange} required>
+          <option value="">Select Hospital</option>
+          {hospitals.map((hospital) => (
+            <option key={hospital.hospital_id} value={hospital.hospital_id}>{hospital.name}</option>
+          ))}
+        </Form.Select>
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>Gender</Form.Label>
+        <Form.Select name="gender" onChange={handleChange} required>
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </Form.Select>
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>Experience (years)</Form.Label>
+        <Form.Control type="number" name="experience" onChange={handleChange} required />
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>Status</Form.Label>
+        <Form.Select name="status" onChange={handleChange} required>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </Form.Select>
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>Identification</Form.Label>
+        <Form.Control type="text" name="identification" onChange={handleChange} required />
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>Phone</Form.Label>
+        <Form.Control type="text" name="phone" onChange={handleChange} required />
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>Email</Form.Label>
+        <Form.Control type="email" name="email" onChange={handleChange} required />
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>Wait Time (minutes)</Form.Label>
+        <Form.Control type="number" name="wait_time" onChange={handleChange} required />
+      </Form.Group>
+    </Form>
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={() => setShow(false)}>Cancel</Button>
+    <Button variant="primary" onClick={handleSubmit}>Add Doctor</Button>
+  </Modal.Footer>
+</Modal>
 
 
         </div>
