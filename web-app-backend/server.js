@@ -75,10 +75,6 @@ app.post("/api/hospitals", async (req, res) => {
 });
 
 
-
-
-
-
 // ✅ API to Get All Hospitals
 app.get("/api/hospitals", async (req, res) => {
     try {
@@ -89,6 +85,24 @@ app.get("/api/hospitals", async (req, res) => {
         res.status(500).json({ success: false, error: "Failed to fetch hospitals" });
     }
 });
+
+
+app.post("/api/doctors", async (req, res) => {
+    try {
+        const { hospital_id, name, speciality, gender, experience, status, identification, phone, email, wait_time } = req.body;
+
+        const sql = `INSERT INTO Doctor (hospital_id, name, speciality, gender, experience, status, identification, phone, email, wait_time, is_deleted) 
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'N')`;
+
+        await db.query(sql, [hospital_id, name, speciality, gender, experience, status, identification, phone, email, wait_time]);
+
+        res.json({ success: true, message: "Doctor added successfully!" });
+    } catch (error) {
+        console.error("❌ Error adding doctor:", error);
+        res.status(500).json({ success: false, error: "Failed to add doctor" });
+    }
+});
+
 
 // ✅ Start the Server
 app.listen(PORT, () => {
