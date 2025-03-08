@@ -4,7 +4,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./pages/components/nav";
-import Sidebar from "./pages/components/sidebar";
 import Footer from "./pages/components/footer";
 
 // Importing Pages
@@ -22,14 +21,8 @@ const App = () => {
 
   return (
     <Router>
-      <div className="d-flex">
-        {/* Sidebar (Hidden when sidebarOpen is false) */}
-        {sidebarOpen && <Sidebar />}
 
-        <div className="flex-grow-1">
-          {/* Navbar with Sidebar Toggle Button */}
-          <Navbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-
+          <Navbar />
           {/* Page Content */}
           <div className="container mt-4">
             <Routes>
@@ -45,8 +38,6 @@ const App = () => {
           </div>
           {/* Footer */}
           <Footer />
-        </div>
-      </div>
     </Router>
   );
 };

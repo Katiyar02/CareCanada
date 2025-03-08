@@ -1,6 +1,3 @@
-// src/pages/components/nav.jsx
-// Navigation Bar with Sidebar Toggle
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -14,34 +11,33 @@ const Navbar = ({ toggleSidebar }) => {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-danger">
-  <div className="container-fluid"> {/* Changed from container to container-fluid */}
-    {/* Sidebar Toggle Button */}
-    <button className="btn btn-light me-3" onClick={toggleSidebar}>
-      <i className="fas fa-bars"></i>
-    </button>
+      <div className="container-fluid">
+        {/* Brand */}
+        <Link className="navbar-brand" to="/">CareCanada</Link>
 
-    {/* Brand */}
-    <Link className="navbar-brand" to="/">CareCanada</Link>
+        {/* Navbar Toggle Button for Small Screens */}
+        <button className="navbar-toggler" type="button" onClick={toggleNavbar}>
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-    {/* Navbar Toggle Button for Small Screens */}
-    <button className="navbar-toggler" type="button" onClick={toggleNavbar}>
-      <span className="navbar-toggler-icon"></span>
-    </button>
-
-    {/* Navbar Links */}
-    <div className={`collapse navbar-collapse ${isOpen ? "show" : ""}`} id="navbarNav">
-      <ul className="navbar-nav ms-auto">
-        <li className="nav-item"><Link className="nav-link text-white" to="/" onClick={toggleNavbar}>Home</Link></li>
-        <li className="nav-item"><Link className="nav-link text-white" to="/appointments" onClick={toggleNavbar}>Appointments</Link></li>
-        <li className="nav-item"><Link className="nav-link text-white" to="/profile" onClick={toggleNavbar}>Profile</Link></li>
-        <li className="nav-item"><Link className="nav-link text-white" to="/settings" onClick={toggleNavbar}>Settings</Link></li>
-        <li className="nav-item"><Link className="nav-link text-white" to="/login" onClick={toggleNavbar}>Login</Link></li>
-        <li className="nav-item"><Link className="btn btn-light text-danger ms-2" to="/signup" onClick={toggleNavbar}>Sign Up</Link></li>
-        <li className="nav-item"><Link className="nav-link text-white" to="/carecanadaprompt">AI Diagnosis</Link></li>
-      </ul>
-    </div>
-  </div>
-</nav>
+        {/* Navbar Links */}
+        <div className={`collapse navbar-collapse ${isOpen ? "show" : ""}`} id="navbarNav">
+          <ul className="navbar-nav ms-auto">
+            <li className="nav-item"><Link className="nav-link text-white" to="/" onClick={toggleNavbar}>Home</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/appointments" onClick={toggleNavbar}>Appointments</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/profile" onClick={toggleNavbar}>Profile</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/settings" onClick={toggleNavbar}>Settings</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/carecanadaprompt" onClick={toggleNavbar}>AI Diagnosis</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/carepanel" onClick={toggleNavbar}>Admin Dashboard</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/dashboard" onClick={toggleNavbar}>Dashboard</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/doctor-management" onClick={toggleNavbar}>Doctor Management</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/first-aid" onClick={toggleNavbar}>First Aid</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/login" onClick={toggleNavbar}>Login</Link></li>
+            <li className="nav-item"><Link className="btn btn-light text-danger ms-2" to="/signup" onClick={toggleNavbar}>Sign Up</Link></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
   );
 };
 

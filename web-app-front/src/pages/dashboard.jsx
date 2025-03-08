@@ -27,14 +27,14 @@ const Dashboard = () => {
 
   // Handle Input Change
   const handleChange = (e) => {
-    const { name, value } = e.target;
-  
-    setNewHospital((prev) => ({
-      ...prev,
-      [name]: name === "has_emergency" ? (value === "1" ? 1 : 0) : value, // ✅ Ensures Number (1 or 0)
-    }));
-  };
-  
+  const { name, value } = e.target;
+
+  setNewHospital((prev) => ({
+    ...prev,
+    [name]: name === "has_emergency" ? (value === "1" ? 1 : 0) : value, // ✅ Ensures Number (1 or 0)
+  }));
+};
+
   
   
   

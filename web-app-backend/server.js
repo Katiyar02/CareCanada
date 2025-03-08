@@ -76,15 +76,21 @@ app.post("/api/hospitals", async (req, res) => {
 
 
 // ✅ API to Get All Hospitals
-app.get("/api/hospitals", async (req, res) => {
+// ✅ API to Get Important Hospital Details
+app.get("/api/hospitals/important", async (req, res) => {
     try {
-        const [rows] = await db.query("SELECT * FROM Hospital WHERE is_deleted = 'N'");
+        const [rows] = await db.query(`
+            SELECT hospital_id, name, city, phone, has_emergency, type
+            FROM Hospital
+            WHERE is_deleted = 'N'
+        `);
         res.json({ success: true, hospitals: rows });
     } catch (error) {
         console.error("❌ Error fetching hospitals:", error.message);
         res.status(500).json({ success: false, error: "Failed to fetch hospitals" });
     }
 });
+
 
 
 app.post("/api/doctors", async (req, res) => {
@@ -100,6 +106,23 @@ app.post("/api/doctors", async (req, res) => {
     } catch (error) {
         console.error("❌ Error adding doctor:", error);
         res.status(500).json({ success: false, error: "Failed to add doctor" });
+    }
+});
+// ✅ API to Get All Doctors
+app.get("/api/doctors", async (req, res) => {
+    try {
+        const [rows] = await db.query(`
+            SELECT d.doctor_id, d.name, d.speciality, d.gender, d.experience, d.status, 
+                   d.identification, d.phone, d.email, d.wait_time, 
+                   h.name AS hospital_name
+            FROM Doctor d
+            JOIN Hospital h ON d.hospital_id = h.hospital_id
+            WHERE d.is_deleted = 'N'
+        `);
+        res.json({ success: true, doctors: rows });
+    } catch (error) {
+        console.error("❌ Error fetching doctors:", error.message);
+        res.status(500).json({ success: false, error: "Failed to fetch doctors" });
     }
 });
 
