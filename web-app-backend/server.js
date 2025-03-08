@@ -118,7 +118,21 @@ app.get("/api/hospitals/important", async (req, res) => {
         const [rows] = await db.query(`
             SELECT hospital_id, name, city, phone, has_emergency, type
             FROM Hospital
-            WHERE is_deleted = 'N'
+            WHERE is_deleted = 'N' ORDER BY hospital_id DESC limit 5 
+        `);
+        res.json({ success: true, hospitals: rows });
+    } catch (error) {
+        console.error("❌ Error fetching hospitals:", error.message);
+        res.status(500).json({ success: false, error: "Failed to fetch hospitals" });
+    }
+});
+
+app.get("/api/hospitals/emergency", async (req, res) => {
+    try {
+        const [rows] = await db.query(`
+            SELECT hospital_id, name, city, phone, has_emergency, type
+            FROM Hospital
+            WHERE is_deleted = 'N' and has_emergency = 1 ORDER BY hospital_id DESC limit 5 
         `);
         res.json({ success: true, hospitals: rows });
     } catch (error) {
