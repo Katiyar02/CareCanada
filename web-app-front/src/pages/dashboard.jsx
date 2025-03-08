@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHospital, faUserInjured, faUsers, faClock, faFilter, faPlus, faEdit, faTrash, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios"; // To send API requests
+import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 
 const Dashboard = () => {
   // State for Modal
+  const [address, setAddress] = useState(null);
   const [show, setShow] = useState(false);
   const [newHospital, setNewHospital] = useState({
     name: "",
@@ -19,6 +21,8 @@ const Dashboard = () => {
     type: "",
     email: "",
     website: "",
+    latitude: "", // Add latitude
+    longitude: "", // Add longitude
   });
 
   // Open & Close Modal
@@ -27,34 +31,137 @@ const Dashboard = () => {
 
   // Handle Input Change
   const handleChange = (e) => {
-  const { name, value } = e.target;
-
-  setNewHospital((prev) => ({
-    ...prev,
+    const { name, value } = e.target;
+    setNewHospital((prev) => ({
+      ...prev,
     [name]: name === "has_emergency" ? (value === "1" ? 1 : 0) : value, // ✅ Ensures Number (1 or 0)
-  }));
-};
+    }));
+  };
 
-  
-  
-  
+  // Handle Address Selection
+  const handleAddressSelect = (selected) => {
+    if (!selected) return;
 
+    // Update the address in the newHospital state
+    setNewHospital((prev) => ({
+      ...prev,
+      address: selected.label,
+    }));
+    setAddress(selected);
 
+    // Use the Google Places API to get more details
+    const placeId = selected.value.place_id;
+    const service = new window.google.maps.places.PlacesService(
+      document.createElement("div")
+    );
+
+    service.getDetails({ placeId }, (place, status) => {
+      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+        let updatedHospital = { ...newHospital, address: selected.label };
+
+        place.address_components.forEach((component) => {
+          if (component.types.includes("postal_code")) {
+            updatedHospital.postal_code = component.long_name;
+          }
+          if (component.types.includes("locality")) {
+            updatedHospital.city = component.long_name;
+          }
+          if (component.types.includes("administrative_area_level_1")) {
+            updatedHospital.province = component.long_name;
+          }
+        });
+
+        // Add latitude and longitude
+        if (place.geometry && place.geometry.location) {
+          console.log(place.geometry.location.lat(), place.geometry.location.lng())
+          updatedHospital.latitude = place.geometry.location.lat();
+          updatedHospital.longitude = place.geometry.location.lng();
+        }
+
+        setNewHospital(updatedHospital);
+      }
+    });
+  };
 
   // Handle Form Submit - Send Data to Backend
   const handleSubmit = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/api/hospitals", newHospital);
-    
-      alert("✅ Hospital added successfully!");
-      setShow(false);
-      window.location.reload(); // Refresh the page to show the new hospital
+      // Send hospital data to the backend
+      const response = await axios.post(
+        "http://localhost:5000/api/hospitals",
+        newHospital
+      );
+
+      if (response.data.success) {
+        alert("✅ Hospital added successfully!");
+
+        // Trigger email with hospital address link
+        const googleMapsLink = `https://www.google.com/maps?q=${newHospital.latitude},${newHospital.longitude}`;
+        await axios.post("http://localhost:5000/api/send-email", {
+          to: "0509gunjan@gmail.com",
+          subject: "New Hospital Added",
+          text: `A new hospital has been added. Address: ${newHospital.address}. Google Maps Link: ${googleMapsLink}`,
+        });
+
+        setShow(false);
+        window.location.reload(); // Refresh the page to show the new hospital
+      } else {
+        alert("❌ Failed to add hospital.");
+      }
     } catch (error) {
       console.error("❌ Error adding hospital:", error);
       alert("❌ Failed to add hospital.");
     }
   };
   
+  const [hospitals, setHospitals] = useState([]);
+  const [emergencyhospitals, setemergencyHospitals] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Fetch hospitals from the backend
+  const fetchHospitals = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await axios.get("http://localhost:5000/api/hospitals/important");
+      if (response.data.success) {
+        setHospitals(response.data.hospitals);
+      } else {
+        setError("Failed to fetch hospitals.");
+      }
+    } catch (err) {
+      setError("An error occurred while fetching hospitals.");
+      console.error("Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch hospitals from the backend
+  const fetchEmergencyHospitals = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await axios.get("http://localhost:5000/api/hospitals/emergency");
+      if (response.data.success) {
+        setHospitals(response.data.hospitals);
+      } else {
+        setError("Failed to fetch hospitals.");
+      }
+    } catch (err) {
+      setError("An error occurred while fetching hospitals.");
+      console.error("Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch hospitals when the component mounts
+  useEffect(() => {
+    fetchHospitals();
+  }, []);
+
   
   
   
@@ -66,14 +173,14 @@ const Dashboard = () => {
         <div className="col-md-12 main-content">
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2>Dashboard Overview</h2>
-            <div>
+            {/* <div>
               <button className="btn btn-light me-2">
                 <FontAwesomeIcon icon={faFilter} /> Filter
               </button>
               <button className="btn btn-danger" onClick={handleShow}>
                 <FontAwesomeIcon icon={faPlus} /> Add Hospital
               </button>
-            </div>
+            </div> */}
           </div>
 
           {/* Stats Cards */}
@@ -106,14 +213,71 @@ const Dashboard = () => {
             <div className="card">
               <div className="card-header d-flex justify-content-between">
                 <div>
-                  <button className="btn btn-outline-danger">All Hospitals</button>
-                  <button className="btn btn-outline-secondary mx-2">Emergency Services</button>
-                  <button className="btn btn-outline-primary">High Volume</button>
+                  <button className="btn btn-outline-danger" onClick={fetchHospitals} disabled={loading}>Recently added Hospitals</button>
+                  <button className="btn btn-outline-secondary mx-2"onClick={fetchEmergencyHospitals} >Emergency Services</button>
+                  {/* <button className="btn btn-outline-primary">High Volume</button> */}
                 </div>
                 <button className="btn btn-danger" onClick={handleShow}>
                   <FontAwesomeIcon icon={faPlus} /> Add New Hospital
                 </button>
               </div>
+            { hospitals.length > 0 ? (
+        <table className="table table-striped mt-3">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>City</th>
+              <th>Phone</th>
+              <th>Emergency</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            {hospitals.map((hospital) => (
+              <tr key={hospital.hospital_id}>
+                <td>{hospital.hospital_id}</td>
+                <td>{hospital.name}</td>
+                <td>{hospital.city}</td>
+                <td>{hospital.phone}</td>
+                <td>{hospital.has_emergency === 1 ? "Yes" : "No"}</td>
+                <td>{hospital.type}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p></p>
+      )}
+      {emergencyhospitals.length > 0 ? (
+        <table className="table table-striped mt-3">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>City</th>
+              <th>Phone</th>
+              <th>Emergency</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            {hospitals.map((emergencyhospitals) => (
+              <tr key={emergencyhospitals.hospital_id}>
+                <td>{emergencyhospitals.hospital_id}</td>
+                <td>{emergencyhospitals.name}</td>
+                <td>{emergencyhospitals.city}</td>
+                <td>{emergencyhospitals.phone}</td>
+                <td>{emergencyhospitals.has_emergency === 1 ? "Yes" : "No"}</td>
+                <td>{emergencyhospitals.type}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )
+       : (
+        <p></p>
+      )}
             </div>
           </div>
 
@@ -184,67 +348,139 @@ const Dashboard = () => {
       {/* ADD HOSPITAL MODAL */}
       {/* Modal for Adding a New Hospital */}
 <Modal show={show} onHide={() => setShow(false)} centered>
-  <Modal.Header closeButton>
-    <Modal.Title>Add New Hospital</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    <Form>
-      <Form.Group className="mb-2">
-        <Form.Label>Hospital Name</Form.Label>
-        <Form.Control type="text" name="name" placeholder="e.g. Toronto General Hospital" onChange={handleChange} required />
-      </Form.Group>
-      <Form.Group className="mb-2">
-        <Form.Label>Address</Form.Label>
-        <Form.Control type="text" name="address" placeholder="Enter address" onChange={handleChange} required />
-      </Form.Group>
-      <Form.Group className="mb-2">
-        <Form.Label>City</Form.Label>
-        <Form.Control type="text" name="city" placeholder="e.g. Toronto" onChange={handleChange} required />
-      </Form.Group>
-      <Form.Group className="mb-2">
-        <Form.Label>Province</Form.Label>
-        <Form.Control type="text" name="province" placeholder="e.g. Ontario" onChange={handleChange} required />
-      </Form.Group>
-      <Form.Group className="mb-2">
-        <Form.Label>Postal Code</Form.Label>
-        <Form.Control type="text" name="postal_code" placeholder="e.g. M5G 2C4" onChange={handleChange} required />
-      </Form.Group>
-      <Form.Group className="mb-2">
-        <Form.Label>Phone</Form.Label>
-        <Form.Control type="text" name="phone" placeholder="e.g. +1 416-123-4567" onChange={handleChange} required />
-      </Form.Group>
-      <Form.Group className="mb-2">
-  <Form.Label>Has Emergency?</Form.Label>
-  <Form.Select name="has_emergency" value={newHospital.has_emergency} onChange={handleChange}>
-    <option value="1">Yes</option>  {/* ✅ Sends 1 */}
-    <option value="0">No</option>   {/* ✅ Sends 0 */}
-  </Form.Select>
-</Form.Group>
-
-
-
-
-
-      <Form.Group className="mb-2">
-        <Form.Label>Type</Form.Label>
-        <Form.Control type="text" name="type" placeholder="e.g. General, Specialized" onChange={handleChange} required />
-      </Form.Group>
-      <Form.Group className="mb-2">
-        <Form.Label>Email</Form.Label>
-        <Form.Control type="email" name="email" placeholder="e.g. hospital@example.com" onChange={handleChange} required />
-      </Form.Group>
-      <Form.Group className="mb-2">
-        <Form.Label>Website</Form.Label>
-        <Form.Control type="text" name="website" placeholder="e.g. www.hospital.com" onChange={handleChange} />
-      </Form.Group>
-    </Form>
-  </Modal.Body>
-  <Modal.Footer>
-    <Button variant="secondary" onClick={() => setShow(false)}>Cancel</Button>
-    <Button variant="danger" onClick={handleSubmit}>Add Hospital</Button>
-  </Modal.Footer>
-</Modal>
-
+        <Modal.Header closeButton>
+          <Modal.Title>Add New Hospital</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-2">
+              <Form.Label>Hospital Name</Form.Label>
+              <Form.Control
+                type="text"
+                name="name"
+                placeholder="e.g. Toronto General Hospital"
+                value={newHospital.name}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-2">
+              <Form.Label>Address</Form.Label>
+              <GooglePlacesAutocomplete
+                apiKey="AIzaSyA6ZNmqlQ4BLOK3nDlpbQGNAU4TlmqEXuY"
+                selectProps={{
+                  value: address,
+                  onChange: handleAddressSelect,
+                  placeholder: "Enter your address...",
+                }}
+              />
+            </Form.Group>
+            <Form.Group className="mb-2">
+              <Form.Label>City</Form.Label>
+              <Form.Control
+                type="text"
+                name="city"
+                value={newHospital.city}
+                onChange={handleChange}
+                readOnly
+              />
+            </Form.Group>
+            <Form.Group className="mb-2">
+              <Form.Label>Province</Form.Label>
+              <Form.Control
+                type="text"
+                name="province"
+                value={newHospital.province}
+                onChange={handleChange}
+                readOnly
+              />
+            </Form.Group>
+            <Form.Group className="mb-2">
+              <Form.Label>Postal Code</Form.Label>
+              <Form.Control
+                type="text"
+                name="postal_code"
+                value={newHospital.postal_code}
+                onChange={handleChange}
+                readOnly
+              />
+            </Form.Group>
+            {/* Hidden fields for latitude and longitude */}
+            <Form.Control
+              type="hidden"
+              name="latitude"
+              value={newHospital.latitude}
+            />
+            <Form.Control
+              type="hidden"
+              name="longitude"
+              value={newHospital.longitude}
+            />
+            <Form.Group className="mb-2">
+              <Form.Label>Phone</Form.Label>
+              <Form.Control
+                type="text"
+                name="phone"
+                placeholder="e.g. +1 416-123-4567"
+                value={newHospital.phone}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-2">
+              <Form.Label>Has Emergency?</Form.Label>
+              <Form.Select
+                name="has_emergency"
+                value={newHospital.has_emergency}
+                onChange={handleChange}
+              >
+                <option value={1}>Yes</option>
+                <option value={0}>No</option>
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-2">
+              <Form.Label>Type</Form.Label>
+              <Form.Control
+                type="text"
+                name="type"
+                placeholder="e.g. General, Specialized"
+                value={newHospital.type}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-2">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                placeholder="e.g. hospital@example.com"
+                value={newHospital.email}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-2">
+              <Form.Label>Website</Form.Label>
+              <Form.Control
+                type="text"
+                name="website"
+                placeholder="e.g. www.hospital.com"
+                value={newHospital.website}
+                onChange={handleChange}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleSubmit}>
+            Add Hospital
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
