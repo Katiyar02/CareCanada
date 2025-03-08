@@ -161,18 +161,54 @@ app.post("/api/doctors", async (req, res) => {
 // ✅ API to Get All Doctors
 app.get("/api/doctors", async (req, res) => {
     try {
+        console.log("🔍 Fetching doctors with hospital names...");
+
         const [rows] = await db.query(`
             SELECT d.doctor_id, d.name, d.speciality, d.gender, d.experience, d.status, 
                    d.identification, d.phone, d.email, d.wait_time, 
-                   h.name AS hospital_name
+                   d.hospital_id, COALESCE(h.name, 'Not Assigned') AS hospital_name
             FROM Doctor d
-            JOIN Hospital h ON d.hospital_id = h.hospital_id
+            LEFT JOIN Hospital h ON d.hospital_id = h.hospital_id
             WHERE d.is_deleted = 'N'
         `);
+
+        console.log("✅ Doctors fetched:", rows);
         res.json({ success: true, doctors: rows });
+
     } catch (error) {
         console.error("❌ Error fetching doctors:", error.message);
         res.status(500).json({ success: false, error: "Failed to fetch doctors" });
+    }
+});
+
+
+
+
+// ✅ API to Update Doctor Details
+app.put("/api/doctors/:doctor_id", async (req, res) => {
+    try {
+        const { doctor_id } = req.params;
+        const { hospital_id, name, speciality, gender, experience, status, identification, phone, email, wait_time } = req.body;
+
+        // 🔹 Check if Doctor Exists
+        const [doctor] = await db.query("SELECT * FROM Doctor WHERE doctor_id = ?", [doctor_id]);
+        if (doctor.length === 0) {
+            return res.status(404).json({ success: false, message: "Doctor not found!" });
+        }
+
+        // 🔹 Update Doctor Details
+        const sql = `
+            UPDATE Doctor 
+            SET hospital_id = ?, name = ?, speciality = ?, gender = ?, experience = ?, status = ?, 
+                identification = ?, phone = ?, email = ?, wait_time = ?
+            WHERE doctor_id = ?`;
+
+        await db.query(sql, [hospital_id, name, speciality, gender, experience, status, identification, phone, email, wait_time, doctor_id]);
+
+        res.json({ success: true, message: "Doctor details updated successfully!" });
+    } catch (error) {
+        console.error("❌ Error updating doctor details:", error);
+        res.status(500).json({ success: false, error: "Failed to update doctor details" });
     }
 });
 
