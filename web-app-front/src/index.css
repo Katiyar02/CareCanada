@@ -5,7 +5,7 @@
   position: relative;
   color: white;
   text-align: center;
-  padding: 100px 20px;
+  padding: 40px 20px;
 }
 
 .hero-overlay {
@@ -36,14 +36,6 @@ body {
   background-color: #f8f9fa;
 }
 
-
-/* Styles for login page */
-.login-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .login-image {
   background-image: url(/src/assets/Images/banner.jpeg);
   background-position: center;
@@ -53,12 +45,18 @@ body {
   width: 100%;
 }
 
-/* Login Container */
-.login-container {
+
+.login-container, .signup-container {
+
   background: rgba(255, 255, 255, 0.9);
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+  margin: 40px auto;
+  width: 600px;
+}
+
 }
 
 /* Responsive Design */
@@ -366,4 +364,49 @@ a.nav-footer:hover {
   width: 100%;
   height: 430px;
   object-fit: cover;
+
+}
+
+.doctor-card-list {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.doctor-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  transition: transform 0.3s;
+  margin: 0px auto;
+}
+
+.doctor-card:hover {
+  transform: translateY(-10px);
+}
+.doctor-card-header h3 {
+  color: #dc3545;
+}
+.doctor-card-header {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.doctor-card-body p {
+  font-size: 1em;
+  color: #555;
+  margin: 5px 0;
+}
+
+.doctor-card-body strong {
+  color: #333;
+
 }

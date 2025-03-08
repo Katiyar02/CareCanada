@@ -59,14 +59,22 @@ const Login = () => {
   };
 
   return (
-    <Container className="mt-5">
-      <Row className="justify-content-center">
-        <Col md={6}>
-          {/* Hero Section */}
-          <div className="text-center mb-4">
-            <h1>Find a Doctor Near You</h1>
-            <p>Check wait times and book appointments instantly.</p>
-            <p className="wait-time">Current Wait Time: <strong>{waitTime}</strong> patients ahead</p>
+
+    <div className="login-page">
+     
+
+      {/* Login Form */}
+      <div className="login-container">
+        <h3 className="mb-4 text-center">Login to CareCanada</h3>
+        
+  
+
+
+        <form>
+          <div className="mb-3">
+            <label className="form-label">Email Address</label>
+            <input type="email" className="form-control" placeholder="Enter your email" required />
+
           </div>
 
           {/* Login Form */}
@@ -126,9 +134,15 @@ const Login = () => {
           <div className="text-center mt-3">
             <Button variant="danger" onClick={handleLogout}>Logout</Button>
           </div>
-        </Col>
-      </Row>
-    </Container>
+
+          <button type="submit" className="btn login-btn btn-danger w-100">Login</button>
+          <p className="mt-3 text-center">
+            <a href="#">Forgot Password?</a> | <a href="#">Sign Up</a>
+          </p>
+        </form>
+      </div>
+    </div>
+
   );
 };
 

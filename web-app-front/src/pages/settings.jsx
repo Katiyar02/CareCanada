@@ -44,10 +44,19 @@ const Settings = () => {
   };
 
   return (
-    <div className="settings-container">
+    <div>
+          <div className="hero-section">
+        <div className="hero-overlay"></div>
+        <div className="hero-content">
+          <h1>Account Settings</h1>
+          <p className="lead">
+            Check wait times and book appointments instantly.
+          </p>
+        </div>
+      </div>
+      <div className="settings-container">
       <div className="content">
         <div className="container">
-          <h1 className="mb-4 text-center">⚙️ Account Settings</h1>
 
           {/* Personal Info */}
           <Card className="settings-card shadow">
@@ -137,6 +146,8 @@ const Settings = () => {
         </div>
       </div>
     </div>
+    </div>
+    
   );
 };
 

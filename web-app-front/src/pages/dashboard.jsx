@@ -188,8 +188,17 @@ const Dashboard = () => {
     <div className="container-fluid">
       <div className="row">
         <div className="col-md-12 main-content">
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <h2>Dashboard Overview</h2>
+          <div className="d-flex justify-content-center align-items-center my-4">
+            <h2 className="text-center">Dashboard Overview</h2>
+            {/* <div>
+              <button className="btn btn-light me-2">
+                <FontAwesomeIcon icon={faFilter} /> Filter
+              </button>
+              <button className="btn btn-danger" onClick={handleShow}>
+                <FontAwesomeIcon icon={faPlus} /> Add Hospital
+              </button>
+            </div> */}
+
           </div>
 
           {/* Stats Cards */}
