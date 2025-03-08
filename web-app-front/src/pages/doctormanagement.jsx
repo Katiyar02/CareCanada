@@ -64,12 +64,16 @@ useEffect(() => {
     setNewDoctor({ ...newDoctor, [e.target.name]: e.target.value });
   };
 
-  // Handle Edit Input Change
-  const handleEditChange = (e) => {
-    setCurrentDoctor({ ...currentDoctor, [e.target.name]: e.target.value });
-  };
 
-  // Handle Form Submit (Add Doctor)
+  function calculateWaitTime(wait_time, patient_count) {
+    
+    return wait_time * patient_count;
+}
+
+const handleEditChange = (e) => {
+  setCurrentDoctor({ ...currentDoctor, [e.target.name]: e.target.value });
+};// Handle Form Submit
+
   const handleSubmit = async () => {
     try {
       await axios.post("http://localhost:5000/api/doctors", newDoctor);
@@ -105,13 +109,13 @@ useEffect(() => {
     <div className="container-fluid">
       <div className="row">
         <div className="col-md-12 main-content">
-          <h2 className="page-title">Doctor Management</h2>
+          <h2 className="page-title text-center my-4">Doctor Management</h2>
 
           {/* Doctor List Card */}
           <div className="card">
             <div className="card-header d-flex justify-content-between align-items-center">
               <h5 className="mb-0">Doctor List</h5>
-              <button className="btn btn-primary" onClick={() => setShow(true)}>
+              <button className="btn btn-danger" onClick={() => setShow(true)}>
                 <FontAwesomeIcon icon={faPlus} /> Add New Doctor
               </button>
             </div>
@@ -123,37 +127,54 @@ useEffect(() => {
                       <th>Name</th>
                       <th>Speciality</th>
                       <th>Hospital</th>
+                      <th>Current Wait Time </th>
                       <th>Gender</th>
                       <th>Experience</th>
                       <th>Phone</th>
                       <th>Email</th>
+                      <th>Wait Time</th>
+                      
+
                       <th>Status</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                  {doctors.map((doctor) => (
-                    <tr key={doctor.doctor_id}>
-                      <td>{doctor.name}</td>
-                      <td>{doctor.speciality}</td>
-                      <td>{doctor.hospital_name ? doctor.hospital_name : "N/A"}</td>  {/* ✅ Display Hospital Name */}
-                      <td>{doctor.gender}</td>
-                      <td>{doctor.experience} years</td>
-                      <td>{doctor.phone}</td>
-                      <td>{doctor.email}</td>
-                      <td>
-                        <span className={`badge bg-${doctor.status === "Active" ? "success" : "secondary"}`}>
-                          {doctor.status}
-                        </span>
-                      </td>
-                      <td className="action-btns">
-                        <button className="btn btn-sm btn-primary me-1" onClick={() => openEditModal(doctor)}>
-                          <FontAwesomeIcon icon={faEdit} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
+
+                    {doctors.map((doctor, index) => (
+                      <tr key={index}>
+                     
+                        <td>{doctor.name}</td>
+                        <td>{doctor.speciality}</td>
+                        <td>{doctor.hospital_name}</td>
+                        <td>{calculateWaitTime(doctor.wait_time,doctor.patient_count)}</td>
+                        <td>{doctor.gender}</td>
+                        <td>{doctor.experience} years</td>
+                        <td>{doctor.identification}</td>
+                        <td>{doctor.phone}</td>
+                        <td>{doctor.email}</td>
+                        <td>{doctor.wait_time} min</td>
+                        
+                        <td>
+                          <span className={`status-badge status-${doctor.status.toLowerCase()}`}>
+                            {doctor.status}
+                          </span>
+                        </td>
+                        <td className="action-btns">
+                          <button className="btn btn-sm btn-primary me-2 mb-1">
+                            <FontAwesomeIcon icon={faEdit} />
+                          </button>
+                          <button className="btn btn-sm btn-danger me-2 mb-1">
+                            <FontAwesomeIcon icon={faTrash} />
+                          </button>
+                          <button className="btn btn-sm btn-info me-2 mb-1">
+                            <FontAwesomeIcon icon={faEye} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+
                 </table>
               </div>
             </div>

@@ -9,11 +9,6 @@ import { faStethoscope, faMapMarkerAlt, faClock } from "@fortawesome/free-solid-
 import { Accordion } from "react-bootstrap";
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStethoscope, faMapMarkerAlt, faClock } from "@fortawesome/free-solid-svg-icons";
-import { Accordion } from "react-bootstrap";
-import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
-
 const Home = () => {
   const [waitTime, setWaitTime] = useState(10);
   const [radius, setRadius] = useState(10);
