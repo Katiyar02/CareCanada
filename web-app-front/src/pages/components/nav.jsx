@@ -30,7 +30,7 @@ const Navbar = ({ toggleSidebar }) => {
             <li className="nav-item"><Link className="nav-link text-white" to="/carecanadaprompt" onClick={toggleNavbar}>AI Diagnosis</Link></li>
             <li className="nav-item"><Link className="nav-link text-white" to="/carepanel" onClick={toggleNavbar}>Admin Dashboard</Link></li>
             <li className="nav-item"><Link className="nav-link text-white" to="/dashboard" onClick={toggleNavbar}>Dashboard</Link></li>
-            <li className="nav-item"><Link className="nav-link text-white" to="/doctor-management" onClick={toggleNavbar}>Doctor Management</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/doctors" onClick={toggleNavbar}>Doctor Management</Link></li>
             <li className="nav-item"><Link className="nav-link text-white" to="/first-aid" onClick={toggleNavbar}>First Aid</Link></li>
             <li className="nav-item"><Link className="nav-link text-white" to="/login" onClick={toggleNavbar}>Login</Link></li>
             <li className="nav-item"><Link className="btn btn-light text-danger ms-2" to="/signup" onClick={toggleNavbar}>Sign Up</Link></li>
