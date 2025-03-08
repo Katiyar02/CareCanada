@@ -1,0 +1,205 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+.content {
+  width: calc(100% - 250px); /* Ensure it takes the remaining width */
+  min-height: 100vh; /* Ensure it stretches to full viewport height */
+  padding: 20px;
+  transition: margin-left 0.3s;
+  background-color: #fff; /* Optional for visibility */
+}
+
+.main-content {
+  width: 100%;
+  min-height: 100vh; /* Ensures it takes up full height */
+}
+
+.container {
+  max-width: 100%;
+  width: 100%;
+}
+
+
+.sidebar a {
+  color: white;
+  padding: 10px;
+  display: block;
+  text-decoration: none;
+}
+.sidebar.show {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+.sidebar a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.content {
+  margin-left: 250px; /* Ensures it doesn't go under the sidebar */
+  padding: 20px;
+  transition: margin-left 0.3s;
+}
+
+.profile-card, .appointment-card {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.btn-custom {
+  background-color: #d62718;
+  color: #fff;
+}
+
+.btn-custom:hover {
+  background-color: #b72b13;
+}
+
+.sidebar {
+  position: absolute; /* Positions it within the body, not the navbar */
+  top: 60px; /* Adjust so it appears below the navbar */
+  left: 10px; /* Slightly offset from the edge */
+  width: 250px;
+  min-height: calc(100vh - 60px); /* Adjust height to exclude navbar */
+  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
+  backdrop-filter: blur(10px); /* Glassmorphism effect */
+  border-radius: 8px; /* Rounded edges */
+  padding: 20px;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+  opacity: 0; /* Initially hidden */
+  transform: translateY(-20px); /* Slight dropdown effect */
+  visibility: hidden;
+}
+
+.sidebar .menu-item {
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  color: white;
+  text-decoration: none;
+}
+
+.sidebar .menu-item:hover,
+.sidebar .menu-item.active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.main-content {
+  margin-left: 250px;
+  padding: 20px;
+}
+
+.card {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.settings-card {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge {
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-radius: 4px;
+}
+
+.status-active {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-inactive {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status-on-leave {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+/* Fix Navbar */
+.navbar {
+  background-color: #d62718; /* Your primary color */
+  width: 100%;
+  padding: 15px 20px;
+}
+
+.navbar-nav {
+  width: 100%; /* Ensures nav items span the full width */
+  display: flex;
+  justify-content: flex-end; /* Aligns menu items to the right */
+}
+
+.navbar .nav-link {
+  color: #fff !important;
+  font-weight: bold;
+}
+
+.navbar .nav-link, .navbar .btn {
+  font-size: 16px;
+  padding: 10px 15px;
+}
+
+.navbar .btn-light {
+  background-color: white;
+  color: #d62718 !important;
+  border: none;
+  padding: 8px 15px;
+}
+
+.navbar .btn-light:hover {
+  background-color: #f8d7da;
+}
+
+/* Fix Form Alignment */
+.signup-container, .login-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 30px;
+  background: #fff;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+footer {
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  background-color: #f8f9fa;
+  padding: 15px;
+  text-align: center;
+}
+
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+  }
+  .content {
+    width: 100%;
+    margin-left: 0;
+  }
+}
