@@ -25,14 +25,23 @@ const Navbar = ({ toggleSidebar }) => {
   useEffect(() => {
     const loggedInUser = JSON.parse(sessionStorage.getItem("user"));
 
-    if (!loggedInUser && location.pathname !== "/login" && location.pathname !== "/signup") {
-      navigate("/login"); // ✅ Redirect non-logged-in users to login
-    } else if (loggedInUser) {
-      // ✅ Ensure is_admin is treated as a number
-      loggedInUser.is_admin = Number(loggedInUser.is_admin);
-      setUser(loggedInUser);
+    if (!loggedInUser) {
+        // If no user, allow access to Home, Login, and Signup, but prevent access to restricted pages
+        if (location.pathname !== "/" && location.pathname !== "/login" && location.pathname !== "/signup") {
+            navigate("/login"); // Redirect non-logged-in users to login only if they try to access restricted pages
+        }
+    } else {
+        // ✅ Ensure is_admin is treated as a number
+        loggedInUser.is_admin = Number(loggedInUser.is_admin);
+        setUser(loggedInUser);
+
+        // ✅ Redirect logged-in users based on role if they're on Login or Signup page
+        if (location.pathname === "/login" || location.pathname === "/signup") {
+            navigate(loggedInUser.is_admin === 1 ? "/dashboard" : "/appointments");
+        }
     }
-  }, [navigate, location]);
+}, [navigate, location]);
+
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-danger">
@@ -48,14 +57,18 @@ const Navbar = ({ toggleSidebar }) => {
         {/* Navbar Links */}
         <div className={`collapse navbar-collapse ${isOpen ? "show" : ""}`} id="navbarNav">
           <ul className="navbar-nav ms-auto">
-            
+
+            {/* ✅ Home, Login, and Sign Up - Always Visible */}
+            <li className="nav-item"><Link className="nav-link text-white" to="/" onClick={toggleNavbar}>Home</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/login" onClick={toggleNavbar}>Login</Link></li>
+            <li className="nav-item"><Link className="btn btn-light text-danger ms-2" to="/signup" onClick={toggleNavbar}>Sign Up</Link></li>
+
             {/* Show Only If User is Logged In */}
-            {user ? (
+            {user && (
               <>
                 {/* ✅ Patient-Specific Pages */}
                 {user.is_admin === 0 && (
                   <>
-                    <li className="nav-item"><Link className="nav-link text-white" to="/" onClick={toggleNavbar}>Home</Link></li>
                     <li className="nav-item"><Link className="nav-link text-white" to="/appointments" onClick={toggleNavbar}>Appointments</Link></li>
                     <li className="nav-item"><Link className="nav-link text-white" to="/profile" onClick={toggleNavbar}>Profile</Link></li>
                     <li className="nav-item"><Link className="nav-link text-white" to="/settings" onClick={toggleNavbar}>Settings</Link></li>
@@ -77,12 +90,6 @@ const Navbar = ({ toggleSidebar }) => {
                     <FontAwesomeIcon icon={faSignOutAlt} /> Logout
                   </button>
                 </li>
-              </>
-            ) : (
-              <>
-                {/* If Not Logged In, Show Login & Signup */}
-                <li className="nav-item"><Link className="nav-link text-white" to="/login" onClick={toggleNavbar}>Login</Link></li>
-                <li className="nav-item"><Link className="btn btn-light text-danger ms-2" to="/signup" onClick={toggleNavbar}>Sign Up</Link></li>
               </>
             )}
           </ul>
