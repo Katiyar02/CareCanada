@@ -53,6 +53,10 @@ const DoctorManagement = () => {
     setNewDoctor({ ...newDoctor, [e.target.name]: e.target.value });
   };
 
+  function calculateWaitTime(wait_time, patient_count) {
+    
+    return wait_time * patient_count;
+}
   // Handle Form Submit
   const handleSubmit = async () => {
     try {
@@ -70,13 +74,13 @@ const DoctorManagement = () => {
     <div className="container-fluid">
       <div className="row">
         <div className="col-md-12 main-content">
-          <h2 className="page-title">Doctor Management</h2>
+          <h2 className="page-title text-center my-4">Doctor Management</h2>
 
           {/* Doctor List Card */}
           <div className="card">
             <div className="card-header d-flex justify-content-between align-items-center">
               <h5 className="mb-0">Doctor List</h5>
-              <button className="btn btn-primary" onClick={() => setShow(true)}>
+              <button className="btn btn-danger" onClick={() => setShow(true)}>
                 <FontAwesomeIcon icon={faPlus} /> Add New Doctor
               </button>
             </div>
@@ -85,16 +89,17 @@ const DoctorManagement = () => {
                 <table className="table table-hover">
                   <thead>
                     <tr>
-                      <th>Photo</th>
                       <th>Name</th>
                       <th>Speciality</th>
                       <th>Hospital</th>
+                      <th>Current Wait Time </th>
                       <th>Gender</th>
                       <th>Experience</th>
                       <th>Identification</th>
                       <th>Phone</th>
                       <th>Email</th>
                       <th>Wait Time</th>
+                      
                       <th>Status</th>
                       <th>Actions</th>
                     </tr>
@@ -102,35 +107,31 @@ const DoctorManagement = () => {
                   <tbody>
                     {doctors.map((doctor, index) => (
                       <tr key={index}>
-                        <td>
-                          <img
-                            href="../assets/Images/Doctor.jpg"
-                            alt={doctor.name}
-                            className="doctor-img"
-                          />
-                        </td>
+                     
                         <td>{doctor.name}</td>
                         <td>{doctor.speciality}</td>
                         <td>{doctor.hospital_name}</td>
+                        <td>{calculateWaitTime(doctor.wait_time,doctor.patient_count)}</td>
                         <td>{doctor.gender}</td>
                         <td>{doctor.experience} years</td>
                         <td>{doctor.identification}</td>
                         <td>{doctor.phone}</td>
                         <td>{doctor.email}</td>
                         <td>{doctor.wait_time} min</td>
+                        
                         <td>
                           <span className={`status-badge status-${doctor.status.toLowerCase()}`}>
                             {doctor.status}
                           </span>
                         </td>
                         <td className="action-btns">
-                          <button className="btn btn-sm btn-primary">
+                          <button className="btn btn-sm btn-primary me-2 mb-1">
                             <FontAwesomeIcon icon={faEdit} />
                           </button>
-                          <button className="btn btn-sm btn-danger">
+                          <button className="btn btn-sm btn-danger me-2 mb-1">
                             <FontAwesomeIcon icon={faTrash} />
                           </button>
-                          <button className="btn btn-sm btn-info">
+                          <button className="btn btn-sm btn-info me-2 mb-1">
                             <FontAwesomeIcon icon={faEye} />
                           </button>
                         </td>

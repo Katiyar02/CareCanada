@@ -24,7 +24,7 @@ const App = () => {
 
           <Navbar />
           {/* Page Content */}
-          <div className="container mt-4">
+          <div className="">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/dashboard" element={<Dashboard />} />

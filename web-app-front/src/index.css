@@ -1,80 +1,421 @@
 .hero-section {
-    background-image: url(/src/assets/Images/banner.jpeg);
-    background-position: center;
-    background-repeat: no-repeat;
-    position: relative;
-    color: white;
-    text-align: center;
-    padding: 100px 20px;
+  background-image: url(/src/assets/Images/banner.jpeg);
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  color: white;
+  text-align: center;
+  padding: 40px 20px;
 }
-  
-  .hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent dark overlay */
-    z-index: 1;
-  }
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent dark overlay */
+  z-index: 1;
+}
 
 .hero-content {
-    position: relative;
-    z-index: 1;
+  position: relative;
+  z-index: 1;
 }
 .search-bar {
-    max-width: 600px;
-    margin: 0 auto;
+  max-width: 600px;
+  margin: 0 auto;
 }
 .wait-time {
-    font-size: 20px;
-    font-weight: bold;
-    color: #ffcc00;
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffcc00;
 }
 
 body {
-    background-color: #f8f9fa;
+  background-color: #f8f9fa;
 }
 
 
-/* Styles for login page */
-.login-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
+
+.login-image {
+  background-image: url(/src/assets/Images/banner.jpeg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.login-container, .signup-container {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin: 40px auto;
+  width: 600px;
+}
+
+
+.login-container, .signup-container {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin: 40px auto;
+}
+
+.login-container h3, .signup-container h3 {
+  color: #dc3545;
+}
+
+/* Responsive Design */
+@media (max-width: 767px) {
+  .login-page {
+    height: auto;
+    padding-bottom: 50px; /* Prevent overlap with footer */
   }
-  
-  .login-image {
-    background-image: url(/src/assets/Images/banner.jpeg);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    height: 100%;
-    width: 100%;
-  }
-  
-  /* Login Container */
+
   .login-container {
-    background: rgba(255, 255, 255, 0.9);
-    padding: 30px;
+    padding: 20px;
+    margin-top: 20px;
+  }
+
+  .login-image {
+    display: none; /* Hide image on small screens */
+  }
+}
+/* Doctor List Card Styling */
+.doctor-card {
+border: 1px solid #ddd;
+border-radius: 10px;
+padding: 20px;
+text-align: center;
+box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+background-color: #fff;
+transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.doctor-card:hover {
+transform: translateY(-5px);
+box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.doctor-card h5 {
+font-size: 1.25rem;
+font-weight: bold;
+}
+
+.doctor-card p {
+font-size: 1rem;
+color: #555;
+margin: 10px 0;
+}
+
+.doctor-card .btn {
+font-size: 1rem;
+font-weight: bold;
+border-radius: 25px;
+}
+
+.doctor-card .btn-primary {
+background-color: #007bff;
+border-color: #007bff;
+}
+
+.doctor-card .btn-primary:hover {
+background-color: #0056b3;
+border-color: #0056b3;
+}
+
+/* Responsive Design for Doctor Cards */
+@media (max-width: 768px) {
+.doctor-card {
+  padding: 15px;
+}
+
+.doctor-card h5 {
+  font-size: 1.1rem;
+}
+
+.doctor-card p {
+  font-size: 0.9rem;
+}
+
+.doctor-card .btn {
+  font-size: 0.9rem;
+}
+}
+
+.faq-wrapper {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.faq-wrapper h2 {
+  color: #dc3545;
+  font-weight: bold;
+  text-align: center;
+}
+
+.faq-content {
+  padding: 10px;
+}
+
+.accordion-item {
+  border: none;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.accordion-button {
+  font-size: 16px;
+  font-weight: 500;
+  color: #007bff;
+}
+
+.accordion-body {
+  background: #f1f1f1;
+  padding: 15px;
+  font-size: 16px;
+}
+
+.icon {
+  color: #dc3545;
+}
+.accordion-button:not(.collapsed) {
+  color: #dc3545;
+  background-color: #dc354538;
+  box-shadow: inset 0 calc(-1 * var(--bs-accordion-border-width)) 0 var(--bs-accordion-border-color);
+}
+
+* General Section Styling */
+.articles-section {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #f8f9fa;
+}
+
+.articles-section h2 {
+    font-size: 28px;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+/* Card Layout */
+.articles-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Individual Card Styling */
+.article-card {
+    background: #ffffff;
+    width: 300px;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 767px) {
-    .login-page {
-      height: auto;
-      padding-bottom: 50px; /* Prevent overlap with footer */
-    }
-  
-    .login-container {
-      padding: 20px;
-      margin-top: 20px;
-    }
-  
-    .login-image {
-      display: none; /* Hide image on small screens */
-    }
-  }
-  
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.article-card:hover {
+    transform: scale(1.05);
+}
+
+.article-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.article-content {
+    padding: 15px;
+}
+
+.article-content h3 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.article-content p {
+    font-size: 14px;
+    color: #666;
+}
+
+section.featerwrapper {
+  background: #f8f8f8;
+  padding: 50px  50px;
+}
+.copyright {
+  background: #dc3545;
+  color: #fff;
+  padding: 20px;
+}
+footer h4 {
+  color: #dc3545;
+}
+a.nav-footer {
+  color: #252525;
+  font-weight: 600;
+}
+a.nav-footer:hover {
+  color: #dc3545!important;
+  font-weight: 600;
+}
+.socialwrapper a i {
+  color: #252525;
+}
+.socialwrapper a i:hover {
+  color: #dc3545!important;
+}
+
+.appointments-card {
+  max-width: 100%;
+  margin: 0 auto;
+  border-radius: 10px;
+}
+
+.appointment-item {
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: transparent!important;
+}
+
+.appointment-item .card-body {
+  padding: 20px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  border-radius: 6px;
+}
+
+
+
+.appointment-item .card-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #dc3545;
+}
+
+.appointment-item .card-text {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.appointment-item button {
+  margin-top: 10px;
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+}
+
+.profile-card {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-card h4 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.profile-image img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.btn-custom {
+  background-color: #ff4b5c;
+  border-color: #ff4b5c;
+  color: white;
+}
+
+.btn-custom:hover {
+  background-color: #e03c47;
+  border-color: #e03c47;
+}
+
+.modal-content {
+  border-radius: 10px;
+}
+
+.modal-header {
+  background-color: #ff4b5c;
+}
+
+.modal-footer {
+  background-color: #f7f7f7;
+}
+
+.form-label {
+  font-weight: 600;
+}
+
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.form-control:focus {
+  border-color: #ff4b5c;
+  box-shadow: 0 0 0 0.2rem rgba(255, 75, 92, 0.25);
+}
+.rounded-circle {
+  border-radius: 50%!important;
+  width: 100%;
+  height: 430px;
+  object-fit: cover;
+}
+
+.doctor-card-list {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.doctor-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  transition: transform 0.3s;
+  margin: 0px auto;
+}
+
+.doctor-card:hover {
+  transform: translateY(-10px);
+}
+.doctor-card-header h3 {
+  color: #dc3545;
+}
+.doctor-card-header {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.doctor-card-body p {
+  font-size: 1em;
+  color: #555;
+  margin: 5px 0;
+}
+
+.doctor-card-body strong {
+  color: #333;
+}

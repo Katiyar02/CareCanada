@@ -32,13 +32,6 @@ const Signup = () => {
     <div className="signup-page">
       <div className="signup-container">
         <h3 className="text-center mb-4">Create an Account</h3>
-
-        <button className="btn social-btn google-btn">
-          <i className="fab fa-google"></i> Continue with Google
-        </button>
-
-        <div className="divider"><span>or</span></div>
-
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label className="form-label">Full Name</label>
@@ -60,8 +53,8 @@ const Signup = () => {
             <input type="checkbox" className="form-check-input" name="agreed" required onChange={handleChange} />
             <label className="form-check-label">I agree to the <a href="#">terms & conditions</a></label>
           </div>
-          <button type="submit" className="btn signup-btn w-100">Sign Up</button>
-          <p className="text-center mt-3">
+          <button type="submit" className="btn signup-btn w-100 btn-danger">Sign Up</button>
+          <p className="text-center mt-3 text-center">
             Already have an account? <a href="/login">Login</a>
           </p>
         </form>
