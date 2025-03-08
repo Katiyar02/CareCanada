@@ -3,10 +3,14 @@ const mysql = require("mysql2/promise");
 const cors = require("cors");
 require("dotenv").config();
 
+const nodemailer = require("nodemailer");
+const bodyParser = require("body-parser");
+
 const app = express();
 const PORT = 5000;
 
 app.use(express.json());
+app.use(bodyParser.json());
 app.use(cors()); // Allow requests from frontend
 
 // ✅ Connect to AWS RDS MySQL Database
@@ -32,6 +36,38 @@ async function testDBConnection() {
     }
 }
 testDBConnection();
+
+// Endpoint to send email
+app.post("/api/send-email", (req, res) => {
+    const { to, subject, text } = req.body;
+  
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "canadacare08@gmail.com", // Replace with your email
+        pass: "hazd gckp fvar oxyz", // Replace with your email password
+      },
+    });
+  
+    const mailOptions = {
+      from: "canadacare08@gmail.com",
+      to,
+      subject,
+      text,
+    };
+  
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+        res.status(500).json({ success: false, message: "Failed to send email" });
+      } else {
+        console.log("Email sent:", info.response);
+        res.json({ success: true, message: "Email sent successfully" });
+      }
+    });
+  });
+  
+  
 
 // ✅ API to Insert a New Hospital
 app.post("/api/hospitals", async (req, res) => {
