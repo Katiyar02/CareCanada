@@ -36,9 +36,6 @@ body {
   background-color: #f8f9fa;
 }
 
-
-
-
 .login-image {
   background-image: url(/src/assets/Images/banner.jpeg);
   background-position: center;
@@ -48,26 +45,18 @@ body {
   width: 100%;
 }
 
+
 .login-container, .signup-container {
+
   background: rgba(255, 255, 255, 0.9);
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
   margin: 40px auto;
   width: 600px;
 }
 
-
-.login-container, .signup-container {
-  background: rgba(255, 255, 255, 0.9);
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin: 40px auto;
-}
-
-.login-container h3, .signup-container h3 {
-  color: #dc3545;
 }
 
 /* Responsive Design */
@@ -375,6 +364,7 @@ a.nav-footer:hover {
   width: 100%;
   height: 430px;
   object-fit: cover;
+
 }
 
 .doctor-card-list {
@@ -418,4 +408,5 @@ a.nav-footer:hover {
 
 .doctor-card-body strong {
   color: #333;
+
 }

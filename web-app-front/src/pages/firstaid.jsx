@@ -1,88 +1,62 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch, faHeartbeat, faFire, faBone, faLungs, faTint, faBolt } from "@fortawesome/free-solid-svg-icons";
+import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
 
-export default function FirstAid() {
-    const [query, setQuery] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-    const [result, setResult] = useState(null);
-    const [previousResponses, setPreviousResponses] = useState([]);
+const FirstAid = () => {
+  const [searchQuery, setSearchQuery] = useState("");
 
-    // 🔹 Fetch previous responses from MySQL
-    useEffect(() => {
-        async function fetchResponses() {
-            try {
-                const res = await axios.get("http://localhost:5000/api/firstaid");
-                setPreviousResponses(res.data);
-            } catch (error) {
-                console.error("Error fetching responses:", error);
-            }
-        }
-        fetchResponses();
-    }, []);
+  const categories = [
+    { name: "CPR & Resuscitation", icon: faHeartbeat },
+    { name: "Burns & Scalds", icon: faFire },
+    { name: "Fractures & Sprains", icon: faBone },
+    { name: "Choking", icon: faLungs },
+    { name: "Bleeding Control", icon: faTint },
+    { name: "Shock Management", icon: faBolt },
+  ];
 
-    // 🔹 Handle AI Search
-    const handleSearch = async () => {
-        if (!query.trim()) {
-            setError("Please enter a valid first aid topic.");
-            return;
-        }
-
-        setLoading(true);
-        setError("");
-        setResult(null);
-
-        try {
-            const response = await axios.post("http://localhost:5000/api/firstaid", { query });
-
-            setResult(response.data);
-        } catch (error) {
-            setError("AI could not generate a response. Try another topic.");
-        }
-
-        setLoading(false);
-    };
-
-    return (
-        <div className="p-6">
-            <h2 className="text-3xl font-bold mb-4">First Aid Assistance</h2>
-
-            {/* Search Input */}
-            <div className="flex gap-4">
-                <input
-                    type="text"
-                    placeholder="Enter first aid topic (e.g., CPR, burns, choking)"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    className="p-2 border rounded w-full"
+  return (
+    <div className="min-vh-100 bg-light">
+      {/* Header Section */}
+      <div className="bg-primary text-white py-5 text-center">
+        <h1 className="fw-bold">What can we help you with?</h1>
+        <Container className="mt-4">
+          <Row className="justify-content-center">
+            <Col md={6}>
+              <Form className="d-flex">
+                <Form.Control
+                  type="text"
+                  placeholder="Type your question here..."
+                  className="me-2"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button onClick={handleSearch} disabled={loading} className="p-2 bg-blue-500 text-white rounded">
-                    {loading ? "Analyzing..." : "Get First Aid Info"}
-                </button>
-            </div>
+                <Button variant="danger">
+                  <FontAwesomeIcon icon={faSearch} />
+                </Button>
+              </Form>
+            </Col>
+          </Row>
+        </Container>
+      </div>
 
-            {/* Error Message */}
-            {error && <p className="text-red-500 mt-2">{error}</p>}
+      {/* Categories Section */}
+      <Container className="py-5">
+        <Row>
+          {categories.map((category, index) => (
+            <Col md={4} sm={6} xs={12} key={index} className="mb-4">
+              <Card className="text-center p-3 shadow-sm">
+                <FontAwesomeIcon icon={category.icon} size="3x" className="text-primary mb-3" />
+                <Card.Body>
+                  <Card.Title>{category.name}</Card.Title>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </Container>
+    </div>
+  );
+};
 
-            {/* Display AI Response */}
-            {result && (
-                <div className="mt-6 p-4 border rounded-lg bg-white shadow">
-                    <h3 className="text-xl font-semibold">First Aid Guide for: {result.query}</h3>
-                    <p className="mt-2">{result.ai_response}</p>
-
-                    {/* YouTube Video Recommendations */}
-                    <h4 className="mt-4 text-lg font-semibold">Recommended Videos</h4>
-                    <ul className="mt-2">
-                        {result.recommended_videos.map((video, index) => (
-                            <li key={index}>
-                                <a href={video.videoUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-                                    {video.title}
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-        </div>
-    );
-}
+export default FirstAid;

@@ -15,6 +15,7 @@ import DoctorManagement from "./pages/doctormanagement";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import Home from "./pages/home";
+import FirstAid from "./pages/firstaid";
 
 const App = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true); // Controls sidebar visibility
@@ -32,6 +33,7 @@ const App = () => {
               <Route path="/settings" element={<Settings />} />
               <Route path="/appointments" element={<Appointments />} />
               <Route path="/doctors" element={<DoctorManagement />} />
+              <Route path="/firstaid" element={<FirstAid />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
             </Routes>

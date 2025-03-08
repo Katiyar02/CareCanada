@@ -162,9 +162,12 @@ app.post("/api/doctors", async (req, res) => {
 // ✅ API to Get All Doctors
 app.get("/api/doctors", async (req, res) => {
     try {
+        console.log("🔍 Fetching doctors with hospital names...");
+
         const [rows] = await db.query(`
             SELECT d.doctor_id, d.name, d.speciality, d.gender, d.experience, d.status, 
                    d.identification, d.phone, d.email, d.wait_time, 
+
                    h.name AS hospital_name , COUNT(a.patient_id) AS patient_count
             FROM Doctor d
             left JOIN Hospital h ON d.hospital_id = h.hospital_id
@@ -172,13 +175,18 @@ app.get("/api/doctors", async (req, res) => {
             where d.is_deleted = 'N' and a.status = 'Scheduled'
             GROUP BY h.name, d.doctor_id
             ORDER BY h.name, patient_count DESC;
+         
         `);
+
+        console.log("✅ Doctors fetched:", rows);
         res.json({ success: true, doctors: rows });
+
     } catch (error) {
         console.error("❌ Error fetching doctors:", error.message);
         res.status(500).json({ success: false, error: "Failed to fetch doctors" });
     }
 });
+
 
 function haversineDistance(lat1, lon1, lat2, lon2) {
     // Convert latitude and longitude from degrees to radians
@@ -268,6 +276,128 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
   });
 
   
+
+
+// ✅ API to Update Doctor Details
+app.put("/api/doctors/:doctor_id", async (req, res) => {
+    try {
+        const { doctor_id } = req.params;
+        const { hospital_id, name, speciality, gender, experience, status, identification, phone, email, wait_time } = req.body;
+
+        // 🔹 Check if Doctor Exists
+        const [doctor] = await db.query("SELECT * FROM Doctor WHERE doctor_id = ?", [doctor_id]);
+        if (doctor.length === 0) {
+            return res.status(404).json({ success: false, message: "Doctor not found!" });
+        }
+
+        // 🔹 Update Doctor Details
+        const sql = `
+            UPDATE Doctor 
+            SET hospital_id = ?, name = ?, speciality = ?, gender = ?, experience = ?, status = ?, 
+                identification = ?, phone = ?, email = ?, wait_time = ?
+            WHERE doctor_id = ?`;
+
+        await db.query(sql, [hospital_id, name, speciality, gender, experience, status, identification, phone, email, wait_time, doctor_id]);
+
+        res.json({ success: true, message: "Doctor details updated successfully!" });
+    } catch (error) {
+        console.error("❌ Error updating doctor details:", error);
+        res.status(500).json({ success: false, error: "Failed to update doctor details" });
+    }
+});
+
+// ✅ User Signup API (Admin & Patient)
+app.post("/api/signup", async (req, res) => {
+    try {
+        const { name, dob, gender, phone, email, address, emergency_contact, emergency_name, emergency_relation, postal_code, password, is_admin } = req.body;
+
+        // 🔹 Check if email already exists
+        const [existingUser] = await db.query("SELECT * FROM Users WHERE email = ?", [email]);
+        if (existingUser.length > 0) {
+            return res.status(400).json({ success: false, message: "Email already exists!" });
+        }
+
+        // 🔹 Insert User into Database
+        const sql = `INSERT INTO Users (name, dob, gender, phone, email, address, emergency_contact, emergency_name, emergency_relation, postal_code, password, is_admin, is_deleted) 
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'N')`;
+
+        await db.query(sql, [name, dob, gender, phone, email, address, emergency_contact, emergency_name, emergency_relation, postal_code, password, is_admin]);
+
+        res.json({ success: true, message: "User registered successfully!" });
+    } catch (error) {
+        console.error("❌ Error signing up:", error);
+        res.status(500).json({ success: false, error: "Failed to register user" });
+    }
+});
+
+// ✅ User Login API
+app.post("/api/login", async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // 🔹 Check if User Exists
+        const [user] = await db.query("SELECT * FROM Users WHERE email = ?", [email]);
+        if (user.length === 0) {
+            return res.status(401).json({ success: false, message: "User not found!" });
+        }
+
+        const validUser = user[0];
+
+        // 🔹 Check Password (No Hashing)
+        if (validUser.password !== password) {
+            return res.status(401).json({ success: false, message: "Invalid password!" });
+        }
+
+        res.json({ success: true, message: "Login successful!", user: validUser });
+    } catch (error) {
+        console.error("❌ Error logging in:", error);
+        res.status(500).json({ success: false, error: "Login failed" });
+    }
+});
+
+// ✅ Get User Profile (Admin & Patient)
+app.get("/api/profile/:user_id", async (req, res) => {
+    try {
+        const { user_id } = req.params;
+        const [user] = await db.query("SELECT * FROM Users WHERE user_id = ?", [user_id]);
+
+        if (user.length === 0) {
+            return res.status(404).json({ success: false, message: "User not found!" });
+        }
+
+        res.json({ success: true, user: user[0] });
+    } catch (error) {
+        res.status(500).json({ success: false, error: "Failed to fetch user profile" });
+    }
+});
+
+// ✅ API to Get All Appointments
+app.get("/api/appointments", async (req, res) => {
+    try {
+      console.log("Fetching appointments...");
+      const [rows] = await db.query(`
+        SELECT 
+          a.appointment_id,
+          u.name AS patient_name,
+          d.name AS doctor_name,
+          h.name AS hospital_name,
+          a.appointment_date,
+          a.status,
+          a.notes
+        FROM Appointment a
+        JOIN Users u ON a.patient_id = u.user_id
+        JOIN Doctor d ON a.doctor_id = d.doctor_id
+        JOIN Hospital h ON a.hospital_id = h.hospital_id
+        WHERE a.is_deleted = 'N'
+        ORDER BY a.appointment_date DESC
+      `);
+      console.log("Appointments fetched:", rows);
+      res.json({ success: true, appointments: rows });
+    } catch (error) {
+      console.error("❌ Error fetching appointments:", error.message);
+      res.status(500).json({ success: false, error: "Failed to fetch appointments" });
+    }
+});
 
 
 // ✅ Start the Server

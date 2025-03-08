@@ -1,15 +1,28 @@
-// web-app-front/src/pages/signup.jsx
 import React, { useState } from "react";
+import axios from "axios";
+import { Form, Button, Container, Row, Col, InputGroup } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser, faEnvelope, faLock, faPhone, faMapMarkerAlt, faBirthdayCake } from "@fortawesome/free-solid-svg-icons";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
     fullName: "",
+    dob: "",
+    gender: "",
+    phone: "",
     email: "",
+    address: "",
+    emergencyContact: "",
+    emergencyName: "",
+    emergencyRelation: "",
+    postalCode: "",
     password: "",
     confirmPassword: "",
+    is_admin: 0, // 0 = Patient, 1 = Admin
     agreed: false,
   });
 
+  // Handle Input Change
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -18,17 +31,44 @@ const Signup = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  // Handle Form Submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-    console.log("User Signed Up:", formData);
-    alert("Signup Successful!");
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/signup", {
+        name: formData.fullName,
+        dob: formData.dob,
+        gender: formData.gender,
+        phone: formData.phone,
+        email: formData.email,
+        address: formData.address,
+        emergency_contact: formData.emergencyContact,
+        emergency_name: formData.emergencyName,
+        emergency_relation: formData.emergencyRelation,
+        postal_code: formData.postalCode,
+        password: formData.password,
+        is_admin: formData.is_admin,
+      });
+
+      if (response.data.success) {
+        alert("Signup Successful!");
+        window.location.href = "/login";
+      } else {
+        alert("Signup Failed!");
+      }
+    } catch (error) {
+      console.error("Signup Error:", error);
+      alert("Error signing up.");
+    }
   };
 
   return (
+
     <div className="signup-page">
       <div className="signup-container">
         <h3 className="text-center mb-4">Create an Account</h3>
@@ -60,6 +100,7 @@ const Signup = () => {
         </form>
       </div>
     </div>
+
   );
 };
 

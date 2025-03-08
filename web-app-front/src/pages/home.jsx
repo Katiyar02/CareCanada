@@ -9,10 +9,16 @@ import { faStethoscope, faMapMarkerAlt, faClock } from "@fortawesome/free-solid-
 import { Accordion } from "react-bootstrap";
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStethoscope, faMapMarkerAlt, faClock } from "@fortawesome/free-solid-svg-icons";
+import { Accordion } from "react-bootstrap";
+import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+
 const Home = () => {
   const [waitTime, setWaitTime] = useState(10);
   const [radius, setRadius] = useState(10);
   const [selectedSpecialty, setSelectedSpecialty] = useState(""); 
+
   const [location, setLocation] = useState('');
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
@@ -40,6 +46,7 @@ const handleSubmit = async (e) => {
         const geocodeResponse = await axios.get(
             `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(location)}&key=AIzaSyA6ZNmqlQ4BLOK3nDlpbQGNAU4TlmqEXuY`
         );
+
 
         if (geocodeResponse.data.status === 'OK') {
             const { lat, lng } = geocodeResponse.data.results[0].geometry.location;
@@ -76,6 +83,7 @@ const handleSubmit = async (e) => {
           <p className="lead">Check wait times and book appointments instantly.</p>
 
           {/* Search Form */}
+
           <form className="row g-2 justify-content-center" onSubmit={handleSubmit}>
             {/* Location Input */}
             <div className="col-md-3">
@@ -90,6 +98,7 @@ const handleSubmit = async (e) => {
 
             {/* Specialty Dropdown */}
              <div className="col-md-3">
+
               <select 
                 className="form-select" 
                 value={selectedSpecialty} 
@@ -99,7 +108,9 @@ const handleSubmit = async (e) => {
                 <option value="General Physician">General Physician</option>
                 <option value="Family Medicine">Family Medicine</option>
                 <option value="Internal Medicine">Internal Medicine</option>
+
                 <option value="Cardiology">Cardiology</option>
+
                 <option value="Dermatologist">Dermatologist</option>
                 <option value="Orthopedic">Orthopedic</option>
                 <option value="Pediatrician">Pediatrician</option>
@@ -108,8 +119,9 @@ const handleSubmit = async (e) => {
                 <option value="Gastroenterologist">Gastroenterologist</option>
                 <option value="Pulmonologist">Pulmonologist</option>
                 <option value="General Surgeon">General Surgeon</option>
+
                 <option value="Neurology">Neurology</option>
-                <option value="Plastic Surgeon">Plastic Surgeon</option>
+    <option value="Plastic Surgeon">Plastic Surgeon</option>
                 <option value="Ophthalmologist">Ophthalmologist</option>
                 <option value="ENT Specialist">ENT Specialist</option>
                 <option value="Obstetrician">Obstetrician</option>
@@ -121,7 +133,9 @@ const handleSubmit = async (e) => {
                 <option value="Allergist">Allergist</option>
                 <option value="Oncologist">Oncologist</option>
               </select>
+
             </div> 
+
 
             {/* Search Button */}
             <div className="col-md-2">
@@ -144,6 +158,7 @@ const handleSubmit = async (e) => {
       value={radius} 
       onChange={(e) => setRadius(e.target.value)} 
     />
+
   </div> 
 </div>
           </form>
@@ -209,6 +224,7 @@ const handleSubmit = async (e) => {
       </section>
     
 
+
       <section className="articles-section my-5">
         <h2 className="text-center text-danger mb-4">Health Articles & Resources</h2>
         <div className="articles-container">
@@ -216,6 +232,7 @@ const handleSubmit = async (e) => {
             <div className="article-card">
                 <img src="../src/assets/Images/healthy-lifestyle.jpg"  alt="Healthy Lifestyle"/>
                 <div className="article-content">
+
                     <h3>10 Tips for a Healthier Lifestyle</h3>
                     <p>Simple ways to improve your daily routine and stay fit.</p>
                 </div>
@@ -224,6 +241,7 @@ const handleSubmit = async (e) => {
             <div className="article-card">
                 <img src="../src/assets/Images/preventive-care.jpg" alt="Preventive Care"/>
                 <div className="article-content">
+
                     <h3>Understanding Preventive Care</h3>
                     <p>Learn how regular checkups can prevent serious illnesses.</p>
                 </div>
@@ -232,14 +250,17 @@ const handleSubmit = async (e) => {
             <div className="article-card">
                 <img src="../src/assets/Images/stress.jpg" alt="Stress Management"/>
                 <div className="article-content">
+
                     <h3>Managing Stress for Better Health</h3>
                     <p>Effective stress-relief techniques for a balanced life.</p>
                 </div>
             </div>
 
+
             <div className="article-card">
                 <img src="../src/assets/Images/medical.png" alt="Medical Conditions"/>
                 <div className="article-content">
+
                     <h3>Common Medical Conditions Explained</h3>
                     <p>FAQs about common health issues and treatments.</p>
                 </div>
@@ -248,7 +269,9 @@ const handleSubmit = async (e) => {
         </div>
     </section>
 
+
      <div className="faq-wrapper">
+
       <h3 className="text-center mb-4">Frequently Asked Questions</h3>
       <div className="faq-content">
         <Accordion>
@@ -303,13 +326,17 @@ const handleSubmit = async (e) => {
               What payment methods are accepted?
             </Accordion.Header>
             <Accordion.Body>
+
              You will pay at the hospital directly.
+
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>
       </div>
+
     </div> 
     </div>
+
 
     
   );

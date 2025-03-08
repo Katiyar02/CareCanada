@@ -1,13 +1,47 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = ({ toggleSidebar }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [user, setUser] = useState(null);
 
   // Function to toggle navbar visibility
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
   };
+
+  // Function to handle logout
+  const handleLogout = () => {
+    sessionStorage.removeItem("user"); // ✅ Clear user session
+    alert("Logged out successfully!");
+    navigate("/login"); // ✅ Redirect to login page
+  };
+
+  // Fetch user data & Redirect if not logged in (except for login/signup pages)
+  useEffect(() => {
+    const loggedInUser = JSON.parse(sessionStorage.getItem("user"));
+
+    if (!loggedInUser) {
+        // If no user, allow access to Home, Login, and Signup, but prevent access to restricted pages
+        if (location.pathname !== "/" && location.pathname !== "/login" && location.pathname !== "/signup") {
+            navigate("/login"); // Redirect non-logged-in users to login only if they try to access restricted pages
+        }
+    } else {
+        // ✅ Ensure is_admin is treated as a number
+        loggedInUser.is_admin = Number(loggedInUser.is_admin);
+        setUser(loggedInUser);
+
+        // ✅ Redirect logged-in users based on role if they're on Login or Signup page
+        if (location.pathname === "/login" || location.pathname === "/signup") {
+            navigate(loggedInUser.is_admin === 1 ? "/dashboard" : "/appointments");
+        }
+    }
+}, [navigate, location]);
+
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-danger">
@@ -23,17 +57,41 @@ const Navbar = ({ toggleSidebar }) => {
         {/* Navbar Links */}
         <div className={`collapse navbar-collapse ${isOpen ? "show" : ""}`} id="navbarNav">
           <ul className="navbar-nav ms-auto">
+
+            {/* ✅ Home, Login, and Sign Up - Always Visible */}
             <li className="nav-item"><Link className="nav-link text-white" to="/" onClick={toggleNavbar}>Home</Link></li>
-            <li className="nav-item"><Link className="nav-link text-white" to="/appointments" onClick={toggleNavbar}>Appointments</Link></li>
-            <li className="nav-item"><Link className="nav-link text-white" to="/profile" onClick={toggleNavbar}>Profile</Link></li>
-            <li className="nav-item"><Link className="nav-link text-white" to="/settings" onClick={toggleNavbar}>Settings</Link></li>
-            <li className="nav-item"><Link className="nav-link text-white" to="/carecanadaprompt" onClick={toggleNavbar}>AI Diagnosis</Link></li>
-            <li className="nav-item"><Link className="nav-link text-white" to="/carepanel" onClick={toggleNavbar}>Admin Dashboard</Link></li>
-            <li className="nav-item"><Link className="nav-link text-white" to="/dashboard" onClick={toggleNavbar}>Dashboard</Link></li>
-            <li className="nav-item"><Link className="nav-link text-white" to="/doctors" onClick={toggleNavbar}>Doctor Management</Link></li>
-            <li className="nav-item"><Link className="nav-link text-white" to="/first-aid" onClick={toggleNavbar}>First Aid</Link></li>
             <li className="nav-item"><Link className="nav-link text-white" to="/login" onClick={toggleNavbar}>Login</Link></li>
             <li className="nav-item"><Link className="btn btn-light text-danger ms-2" to="/signup" onClick={toggleNavbar}>Sign Up</Link></li>
+
+            {/* Show Only If User is Logged In */}
+            {user && (
+              <>
+                {/* ✅ Patient-Specific Pages */}
+                {user.is_admin === 0 && (
+                  <>
+                    <li className="nav-item"><Link className="nav-link text-white" to="/appointments" onClick={toggleNavbar}>Appointments</Link></li>
+                    <li className="nav-item"><Link className="nav-link text-white" to="/profile" onClick={toggleNavbar}>Profile</Link></li>
+                    <li className="nav-item"><Link className="nav-link text-white" to="/settings" onClick={toggleNavbar}>Settings</Link></li>
+                    <li className="nav-item"><Link className="nav-link text-white" to="/firstaid" onClick={toggleNavbar}>First Aid</Link></li>
+                  </>
+                )}
+
+                {/* ✅ Admin-Specific Pages */}
+                {user.is_admin === 1 && (
+                  <>
+                    <li className="nav-item"><Link className="nav-link text-white" to="/dashboard" onClick={toggleNavbar}>Admin Dashboard</Link></li>
+                    <li className="nav-item"><Link className="nav-link text-white" to="/doctors" onClick={toggleNavbar}>Doctor Management</Link></li>
+                  </>
+                )}
+
+                {/* 🔥 Logout Button with Icon */}
+                <li className="nav-item">
+                  <button className="btn btn-outline-light ms-3" onClick={handleLogout}>
+                    <FontAwesomeIcon icon={faSignOutAlt} /> Logout
+                  </button>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
